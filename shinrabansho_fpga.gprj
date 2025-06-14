@@ -16,6 +16,7 @@
         <File path="src/target/GeneralPurposeOutput.sv" type="file.verilog" enable="1"/>
         <File path="src/target/IOBus.sv" type="file.verilog" enable="1"/>
         <File path="src/target/Mem.sv" type="file.verilog" enable="1"/>
+        <File path="src/target/Spi.sv" type="file.verilog" enable="1"/>
         <File path="src/target/Uart.sv" type="file.verilog" enable="1"/>
         <File path="src/target/VideoController.sv" type="file.verilog" enable="1"/>
         <File path="src/target/Vram.sv" type="file.verilog" enable="1"/>

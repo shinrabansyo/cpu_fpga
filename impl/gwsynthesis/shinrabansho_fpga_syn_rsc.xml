@@ -1,33 +1,34 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<Module name="Top" Lut="1" T_Register="1394(0)" T_Alu="373(0)" T_Lut="3387(1)" T_MULT36X36="1(0)" T_Bsram="12(0)" T_Ssram="80(0)">
+<Module name="Top" Lut="1" T_Register="1393(0)" T_Alu="363(0)" T_Lut="3521(1)" T_MULT36X36="1(0)" T_Bsram="20(0)" T_Ssram="80(0)">
  <SubModule name="cpu_clk_gen"/>
  <SubModule name="dvi_clk_gen"/>
- <SubModule name="core" Register="49" Alu="32" Lut="1237" Ssram="80" T_Register="787(49)" T_Alu="331(32)" T_Lut="2616(1237)" T_MULT36X36="1(0)" T_Bsram="10(0)" T_Ssram="80(80)">
-  <SubModule name="io_bus" Lut="13" T_Register="656(0)" T_Alu="174(0)" T_Lut="405(13)" T_Bsram="2(0)">
-   <SubModule name="uart_tx" Register="17" Lut="26" T_Register="17(17)" T_Lut="26(26)"/>
-   <SubModule name="uart_rx" Register="31" Lut="36" T_Register="31(31)" T_Lut="36(36)"/>
+ <SubModule name="core" Register="49" Alu="32" Lut="1445" Ssram="80" T_Register="786(49)" T_Alu="321(32)" T_Lut="2748(1445)" T_MULT36X36="1(0)" T_Bsram="18(0)" T_Ssram="80(80)">
+  <SubModule name="io_bus" Lut="37" T_Register="699(0)" T_Alu="164(0)" T_Lut="525(37)" T_Bsram="4(0)">
+   <SubModule name="uart_tx" Register="20" Lut="31" T_Register="20(20)" T_Lut="31(31)"/>
+   <SubModule name="uart_rx" Register="34" Lut="27" T_Register="34(34)" T_Lut="27(27)"/>
+   <SubModule name="spi" Register="33" Lut="83" T_Register="33(33)" T_Lut="83(83)"/>
    <SubModule name="gpout" Register="8" T_Register="8(8)"/>
    <SubModule name="counter" Register="160" Alu="157" Lut="13" T_Register="160(160)" T_Alu="157(157)" T_Lut="13(13)"/>
-   <SubModule name="vc" Register="434" Alu="17" Lut="299" T_Register="440(434)" T_Alu="17(17)" T_Lut="317(299)" T_Bsram="2(0)">
-    <SubModule name="vram_sync" Register="6" Lut="18" Bsram="2" T_Register="6(6)" T_Lut="18(18)" T_Bsram="2(2)"/>
+   <SubModule name="vc" Register="434" Alu="7" Lut="315" T_Register="444(434)" T_Alu="7(7)" T_Lut="334(315)" T_Bsram="4(0)">
+    <SubModule name="vram_sync" Register="10" Lut="19" Bsram="4" T_Register="10(10)" T_Lut="19(19)" T_Bsram="4(4)"/>
    </SubModule>
   </SubModule>
-  <SubModule name="m_inst_mod" Register="47" Lut="430" T_Register="47(47)" T_Alu="61(0)" T_Lut="430(430)" T_MULT36X36="1(0)">
+  <SubModule name="m_inst_mod" Register="3" Lut="250" Bsram="6" T_Register="3(3)" T_Alu="61(0)" T_Lut="250(250)" T_MULT36X36="1(0)" T_Bsram="6(6)">
    <SubModule name="div6_b" Alu="61" MULT36X36="1" T_Alu="61(61)" T_MULT36X36="1(1)"/>
   </SubModule>
-  <SubModule name="m_data_mod" Register="35" Lut="125" Bsram="8" T_Register="35(35)" T_Lut="125(125)" T_Bsram="8(8)"/>
-  <SubModule name="alu" Alu="64" Lut="419" T_Alu="64(64)" T_Lut="419(419)"/>
+  <SubModule name="m_data_mod" Register="35" Lut="129" Bsram="8" T_Register="35(35)" T_Lut="129(129)" T_Bsram="8(8)"/>
+  <SubModule name="alu" Alu="64" Lut="399" T_Alu="64(64)" T_Lut="399(399)"/>
  </SubModule>
  <SubModule name="dvi_x5_clk_gen"/>
- <SubModule name="u_tx" Register="67" Lut="7" T_Register="607(67)" T_Alu="42(0)" T_Lut="770(7)" T_Bsram="2(0)">
+ <SubModule name="u_tx" Register="67" Lut="7" T_Register="607(67)" T_Alu="42(0)" T_Lut="772(7)" T_Bsram="2(0)">
   <SubModule name="gen_intgen.u_delay" Register="6" Alu="10" Lut="1" Bsram="1" T_Register="6(6)" T_Alu="10(10)" T_Lut="1(1)" T_Bsram="1(1)"/>
-  <SubModule name="gen_audio.u_audio" Register="25" Alu="4" Lut="51" T_Register="49(25)" T_Alu="20(4)" T_Lut="73(51)" T_Bsram="1(0)">
+  <SubModule name="gen_audio.u_audio" Register="25" Alu="4" Lut="52" T_Register="49(25)" T_Alu="20(4)" T_Lut="74(52)" T_Bsram="1(0)">
    <SubModule name="u_fifo" Register="24" Alu="16" Lut="22" Bsram="1" T_Register="24(24)" T_Alu="16(16)" T_Lut="22(22)" T_Bsram="1(1)"/>
   </SubModule>
-  <SubModule name="gen_info.u_info" Register="19" Lut="43" T_Register="19(19)" T_Lut="43(43)"/>
-  <SubModule name="gen_data.u_data" Register="299" Lut="388" T_Register="299(299)" T_Lut="388(388)"/>
-  <SubModule name="gen_enc[0].u" Register="52" Alu="4" Lut="93" T_Register="52(52)" T_Alu="4(4)" T_Lut="93(93)"/>
-  <SubModule name="gen_enc[1].u" Register="42" Alu="4" Lut="81" T_Register="42(42)" T_Alu="4(4)" T_Lut="81(81)"/>
+  <SubModule name="gen_info.u_info" Register="19" Lut="45" T_Register="19(19)" T_Lut="45(45)"/>
+  <SubModule name="gen_data.u_data" Register="299" Lut="389" T_Register="299(299)" T_Lut="389(389)"/>
+  <SubModule name="gen_enc[0].u" Register="52" Alu="4" Lut="92" T_Register="52(52)" T_Alu="4(4)" T_Lut="92(92)"/>
+  <SubModule name="gen_enc[1].u" Register="42" Alu="4" Lut="80" T_Register="42(42)" T_Alu="4(4)" T_Lut="80(80)"/>
   <SubModule name="gen_enc[2].u" Register="43" Alu="4" Lut="84" T_Register="43(43)" T_Alu="4(4)" T_Lut="84(84)"/>
   <SubModule name="u_ser" Register="30" T_Register="30(30)"/>
  </SubModule>

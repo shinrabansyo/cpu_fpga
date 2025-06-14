@@ -10,21 +10,21 @@ module veryl_VramSync #(
     parameter bit          BUFFER_OUT    = 1                                                                         , // 同期読み出し
     parameter DATA_TYPE    INITIAL_VALUE = DATA_TYPE'(0                                                             )
 ) (
-    input wire                          i_clk , // クロック
-    input wire                          i_rst , // リセット
-    input wire                          i_clr , // リセット2
-    input wire                          i_mea , // セレクト (w)
-    input wire     [DATA_WIDTH / 8-1:0] i_wea , // バイト単位の書き込み許可 (w)
-    input wire     [ADDRESS_WIDTH-1:0]  i_adra, // アドレス (w)
+    input logic                          i_clk , // クロック
+    input logic                          i_rst , // リセット
+    input logic                          i_clr , // リセット2
+    input logic                          i_mea , // セレクト (w)
+    input logic     [DATA_WIDTH / 8-1:0] i_wea , // バイト単位の書き込み許可 (w)
+    input logic     [ADDRESS_WIDTH-1:0]  i_adra, // アドレス (w)
     input DATA_TYPE                      i_da  , // データ (w)
     // i_meb : input  logic                    , // セレクト (r)
     // i_adrb: input  logic    <ADDRESS_WIDTH> , // アドレス (r)
     // o_qb  : output DATA_TYPE                , // データ (r)
 
-    input wire                             i_clk_video,
-    input wire                             i_rst_video,
-    input wire                             i_mev      ,
-    input wire     [$clog2(WORD_SIZE)-1:0] i_adrv     ,
+    input  logic                             i_clk_video,
+    input  logic                             i_rst_video,
+    input  logic                             i_mev      ,
+    input  logic     [$clog2(WORD_SIZE)-1:0] i_adrv     ,
     output DATA_TYPE                         o_qv   
 );
     logic [$bits(DATA_TYPE)-1:0] ram_data [0:WORD_SIZE-1];

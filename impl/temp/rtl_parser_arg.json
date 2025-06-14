@@ -2,64 +2,68 @@
  "Device" : "GW1NR-9C",
  "Files" : [
   {
-   "Path" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/src/Top.sv",
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/Top.sv",
    "Type" : "verilog"
   },
   {
-   "Path" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/src/ip/cpu_rpll/cpu_rpll.v",
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/ip/cpu_rpll/cpu_rpll.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/src/ip/dvi_clkdiv/dvi_clkdiv.v",
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/ip/dvi_clkdiv/dvi_clkdiv.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/src/ip/dvi_x5_rpll/dvi_x5_rpll.v",
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/ip/dvi_x5_rpll/dvi_x5_rpll.v",
    "Type" : "verilog"
   },
   {
-   "Path" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/src/target/Alu.sv",
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/Alu.sv",
    "Type" : "verilog"
   },
   {
-   "Path" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/src/target/ClkCounter.sv",
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/ClkCounter.sv",
    "Type" : "verilog"
   },
   {
-   "Path" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/src/target/Core.sv",
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/Core.sv",
    "Type" : "verilog"
   },
   {
-   "Path" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/src/target/Decoupled.sv",
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/Decoupled.sv",
    "Type" : "verilog"
   },
   {
-   "Path" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/src/target/GeneralPurposeOutput.sv",
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/GeneralPurposeOutput.sv",
    "Type" : "verilog"
   },
   {
-   "Path" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/src/target/IOBus.sv",
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/IOBus.sv",
    "Type" : "verilog"
   },
   {
-   "Path" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/src/target/Mem.sv",
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/Mem.sv",
    "Type" : "verilog"
   },
   {
-   "Path" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/src/target/Uart.sv",
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/Spi.sv",
    "Type" : "verilog"
   },
   {
-   "Path" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/src/target/VideoController.sv",
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/Uart.sv",
    "Type" : "verilog"
   },
   {
-   "Path" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/src/target/Vram.sv",
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/VideoController.sv",
+   "Type" : "verilog"
+  },
+  {
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/Vram.sv",
    "Type" : "verilog"
   },
   {
    "Library" : "work",
-   "Path" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/src/ip/hdmi_tx_gw.vhd",
+   "Path" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/ip/hdmi_tx_gw.vhd",
    "Type" : "vhdl"
   }
  ],
@@ -67,7 +71,7 @@
 
  ],
  "LoopLimit" : 2000,
- "ResultFile" : "C:/Users/wakuto/Documents/Gowin/shinrabansho_fpga/impl/temp/rtl_parser.result",
+ "ResultFile" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/impl/temp/rtl_parser.result",
  "Top" : "",
  "VerilogStd" : "sysv",
  "VhdlStd" : "vhdl_2008"

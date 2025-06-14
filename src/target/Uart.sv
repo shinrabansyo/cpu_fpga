@@ -14,24 +14,23 @@ module veryl_UartTx #(
     logic [$clog2(8 + 2)-1:0]            r_bit_counter ;
     logic [8 + 2-1:0]                    r_bits        ;
 
-    always_comb o_tx         = r_bit_counter == 0 || r_bits[0];
     logic [1-1:0] w_ready     ; always_comb w_ready      = r_bit_counter == 0;
+    always_comb o_tx         = w_ready | r_bits[0];
     always_comb if_din.ready = w_ready;
 
     always_ff @ (posedge i_clk) begin
         if (i_rst) begin
             r_rate_counter <= 0;
             r_bit_counter  <= 0;
-            r_bits         <= 0;
+            r_bits         <= '1;
         end else begin
-            if ((w_ready && if_din.valid)) begin
+            if ((w_ready && if_din.valid)) begin // 送信開始
                 r_bits         <= {1'b1, if_din.bits, 1'b0};
                 r_bit_counter  <= 8 + 2;
                 r_rate_counter <= BAUD_DIVIDER[$bits(r_rate_counter) - 1:0];
-            end
-            if (r_bit_counter > 0) begin
+            end else if (r_bit_counter > 0) begin // 送信中
                 if ((r_rate_counter == 0)) begin
-                    r_bits[7:0]    <= r_bits[8:1];
+                    r_bits[8:0]    <= r_bits[9:1];
                     r_bit_counter  <= r_bit_counter  - (1);
                     r_rate_counter <= BAUD_DIVIDER[$bits(r_rate_counter) - 1:0];
                 end else begin

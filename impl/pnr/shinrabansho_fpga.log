@@ -1,7 +1,7 @@
-Reading netlist file: "C:\Users\wakuto\Documents\Gowin\shinrabansho_fpga\impl\gwsynthesis\shinrabansho_fpga.vg"
-Parsing netlist file "C:\Users\wakuto\Documents\Gowin\shinrabansho_fpga\impl\gwsynthesis\shinrabansho_fpga.vg" completed
+Reading netlist file: "C:\Users\wakuto\src\shinrabansho\cpu_fpga\impl\gwsynthesis\shinrabansho_fpga.vg"
+Parsing netlist file "C:\Users\wakuto\src\shinrabansho\cpu_fpga\impl\gwsynthesis\shinrabansho_fpga.vg" completed
 Processing netlist completed
-Reading constraint file: "C:\Users\wakuto\Documents\Gowin\shinrabansho_fpga\src\shinrabansho_fpga.cst"
+Reading constraint file: "C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\shinrabansho_fpga.cst"
 Physical Constraint parsed completed
 Running placement......
 [10%] Placement Phase 0 completed
@@ -21,10 +21,10 @@ Bitstream generation in progress......
 Bitstream generation completed
 Running power analysis......
 [100%] Power analysis completed
-Generate file "C:\Users\wakuto\Documents\Gowin\shinrabansho_fpga\impl\pnr\shinrabansho_fpga.power.html" completed
-Generate file "C:\Users\wakuto\Documents\Gowin\shinrabansho_fpga\impl\pnr\shinrabansho_fpga.pin.html" completed
-Generate file "C:\Users\wakuto\Documents\Gowin\shinrabansho_fpga\impl\pnr\shinrabansho_fpga.rpt.html" completed
-Generate file "C:\Users\wakuto\Documents\Gowin\shinrabansho_fpga\impl\pnr\shinrabansho_fpga.rpt.txt" completed
-Generate file "C:\Users\wakuto\Documents\Gowin\shinrabansho_fpga\impl\pnr\shinrabansho_fpga.tr.html" completed
-Sat Apr  5 20:41:19 2025
+Generate file "C:\Users\wakuto\src\shinrabansho\cpu_fpga\impl\pnr\shinrabansho_fpga.power.html" completed
+Generate file "C:\Users\wakuto\src\shinrabansho\cpu_fpga\impl\pnr\shinrabansho_fpga.pin.html" completed
+Generate file "C:\Users\wakuto\src\shinrabansho\cpu_fpga\impl\pnr\shinrabansho_fpga.rpt.html" completed
+Generate file "C:\Users\wakuto\src\shinrabansho\cpu_fpga\impl\pnr\shinrabansho_fpga.rpt.txt" completed
+Generate file "C:\Users\wakuto\src\shinrabansho\cpu_fpga\impl\pnr\shinrabansho_fpga.tr.html" completed
+Sun Jun  8 00:20:11 2025
 

@@ -16,9 +16,9 @@ module veryl_IOBus #(
     input  logic [1-1:0] i_rx,
 
     // SPI
-    // o_sclk: output logic<1>,
-    // o_mosi: output logic<1>,
-    // i_miso: input  logic<1>,
+    output logic [1-1:0] o_sclk,
+    output logic [1-1:0] o_mosi,
+    input  logic [1-1:0] i_miso,
 
     // GPIO
     output logic [8-1:0] o_gpout,
@@ -32,9 +32,9 @@ module veryl_IOBus #(
     output logic [24-1:0] o_data   
 );
     // UART
-    veryl_Decoupled #(.Width (8)) if_uart_tx      ();
-    veryl_Decoupled #(.Width (8)) if_uart_rx      ();
-    logic [1-1:0] uart_rx_overrun;
+    veryl_Decoupled #(.Width (8)) if_uart_tx        ();
+    veryl_Decoupled #(.Width (8)) if_uart_rx        ();
+    logic [1-1:0] w_uart_rx_overrun;
 
     veryl_UartTx #(
         .ClockFrequency (ClockFrequency),
@@ -51,11 +51,41 @@ module veryl_IOBus #(
         .BaudRate       (UartBaudRate  ),
         .RxSyncStages   (2             )
     ) uart_rx (
-        .i_clk     (i_clk          ),
-        .i_rst     (i_rst          ),
-        .if_dout   (if_uart_rx     ),
-        .i_rx      (i_rx           ),
-        .o_overrun (uart_rx_overrun)
+        .i_clk     (i_clk            ),
+        .i_rst     (i_rst            ),
+        .if_dout   (if_uart_rx       ),
+        .i_rx      (i_rx             ),
+        .o_overrun (w_uart_rx_overrun)
+    );
+
+    // SPI
+    veryl_Decoupled #(.Width (8)) if_spi_din  ();
+    veryl_Decoupled #(.Width (8)) if_spi_dout ();
+
+    veryl_Decoupled #(.Width (3)) if_spi_clkshamt ();
+    logic [3-1:0] w_spi_clkshamt ;
+
+    veryl_Decoupled #(.Width (2)) if_spi_mode ();
+    logic [2-1:0] w_spi_mode ;
+
+    veryl_Spi #(
+        .ClockFrequency (ClockFrequency)
+    ) spi (
+        .i_clk (i_clk),
+        .i_rst (i_rst),
+        .
+        o_mosi (o_mosi),
+        .i_miso (i_miso),
+        .o_sclk (o_sclk),
+        .
+        if_din  (if_spi_din ),
+        .if_dout (if_spi_dout),
+        .
+        if_clkshamt (if_spi_clkshamt),
+        .o_clkshamt  (w_spi_clkshamt ),
+        .
+        if_spi_mode (if_spi_mode),
+        .o_spi_mode  (w_spi_mode )
     );
 
     // GPIO
@@ -115,6 +145,9 @@ module veryl_IOBus #(
     logic [1-1:0] is_out_instr     ; always_comb is_out_instr      = if_din.valid;
     logic [1-1:0] is_inout_instr   ; always_comb is_inout_instr    = is_in_instr | is_out_instr;
     logic [1-1:0] is_uart          ; always_comb is_uart           = is_inout_instr & (i_dev_id == 32'h0000);
+    logic [1-1:0] is_spi_data      ; always_comb is_spi_data       = is_inout_instr & (i_dev_id == 32'h0001);
+    logic [1-1:0] is_spi_mode      ; always_comb is_spi_mode       = is_inout_instr & (i_dev_id == 32'h0002);
+    logic [1-1:0] is_spi_clkshamt  ; always_comb is_spi_clkshamt   = is_inout_instr & (i_dev_id == 32'h0003);
     logic [1-1:0] is_gpout         ; always_comb is_gpout          = is_inout_instr & (i_dev_id == 32'h0004);
     logic [1-1:0] is_hdmi_col_mode ; always_comb is_hdmi_col_mode  = is_out_instr & (i_dev_id == 32'h0006);
     logic [1-1:0] is_hdmi_col_table; always_comb is_hdmi_col_table = is_out_instr & (i_dev_id == 32'h0007);
@@ -129,6 +162,16 @@ module veryl_IOBus #(
     always_comb if_uart_tx.valid = is_uart & if_din.valid;
     always_comb if_uart_tx.bits  = if_din.bits[7:0];
     always_comb if_uart_rx.ready = is_uart & if_dout.ready;
+
+    always_comb if_spi_din.valid  = is_spi_data & if_din.valid;
+    always_comb if_spi_din.bits   = if_din.bits[7:0];
+    always_comb if_spi_dout.ready = is_spi_data & if_dout.ready;
+
+    always_comb if_spi_mode.valid = is_spi_mode & if_din.valid;
+    always_comb if_spi_mode.bits  = if_din.bits[1:0];
+
+    always_comb if_spi_clkshamt.valid = is_spi_clkshamt & if_din.valid;
+    always_comb if_spi_clkshamt.bits  = if_din.bits[2:0];
 
     always_comb if_gpout_write.valid = is_gpout & if_din.valid;
     always_comb if_gpout_write.bits  = if_din.bits[7:0];
@@ -145,6 +188,18 @@ module veryl_IOBus #(
             if_din.ready  = is_out_instr & if_uart_tx.ready;
             if_dout.valid = is_in_instr & if_uart_rx.valid;
             if_dout.bits  = {24'b0, if_uart_rx.bits};
+        end else if (is_spi_data) begin
+            if_din.ready  = is_out_instr & if_spi_din.ready;
+            if_dout.valid = is_in_instr & if_spi_dout.valid;
+            if_dout.bits  = {24'b0, if_spi_dout.bits};
+        end else if (is_spi_mode) begin
+            if_din.ready  = is_out_instr & if_spi_mode.ready;
+            if_dout.valid = 1;
+            if_dout.bits  = {30'b0, w_spi_mode};
+        end else if (is_spi_clkshamt) begin
+            if_din.ready  = is_out_instr & if_spi_clkshamt.ready;
+            if_dout.valid = 1;
+            if_dout.bits  = {29'b0, w_spi_clkshamt};
         end else if (is_gpout) begin
             if_din.ready  = is_out_instr & if_gpout_write.ready;
             if_dout.valid = is_in_instr & if_gpout_read.valid;

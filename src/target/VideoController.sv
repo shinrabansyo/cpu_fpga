@@ -18,16 +18,14 @@ package veryl_Video;
     } VesaDmtConfig;
 
     function automatic VesaDmtConfig Dmt1280x720At60Hz;
-        VesaDmtConfig dmt_1280x720_at_60hz        ;
-        dmt_1280x720_at_60hz.H_TOTAL = 1650;
-        dmt_1280x720_at_60hz.H_SYNC  = 40;
-        // dmt_1280x720_at_60hz.H_BACK_PORCH  = 220;
-        dmt_1280x720_at_60hz.H_BACK_PORCH = 260;
-        dmt_1280x720_at_60hz.H_LBORDER    = 0;
-        dmt_1280x720_at_60hz.H_ACTIVE     = 1280;
-        dmt_1280x720_at_60hz.H_RBORDER    = 0;
-        // dmt_1280x720_at_60hz.H_FRONT_PORCH = 110;
-        dmt_1280x720_at_60hz.H_FRONT_PORCH = 0;
+        VesaDmtConfig dmt_1280x720_at_60hz              ;
+        dmt_1280x720_at_60hz.H_TOTAL       = 1650;
+        dmt_1280x720_at_60hz.H_SYNC        = 40;
+        dmt_1280x720_at_60hz.H_BACK_PORCH  = 220;
+        dmt_1280x720_at_60hz.H_LBORDER     = 0;
+        dmt_1280x720_at_60hz.H_ACTIVE      = 1280;
+        dmt_1280x720_at_60hz.H_RBORDER     = 0;
+        dmt_1280x720_at_60hz.H_FRONT_PORCH = 110;
 
         dmt_1280x720_at_60hz.V_TOTAL         = 750;
         dmt_1280x720_at_60hz.V_SYNC          = 5;
@@ -35,30 +33,29 @@ package veryl_Video;
         dmt_1280x720_at_60hz.V_TOP_BORDER    = 0;
         dmt_1280x720_at_60hz.V_ACTIVE        = 720;
         dmt_1280x720_at_60hz.V_BOTTOM_BORDER = 0;
-        // dmt_1280x720_at_60hz.V_FRONT_PORCH   = 5;
-        dmt_1280x720_at_60hz.V_FRONT_PORCH = 0;
+        dmt_1280x720_at_60hz.V_FRONT_PORCH   = 5;
         return dmt_1280x720_at_60hz;
     endfunction
 endpackage
 
 module veryl_VideoControllerColTable #(
-    parameter int unsigned               WIDTH              = 128                              ,
-    parameter int unsigned               HEIGHT             = 128                              ,
-    parameter int unsigned               NUM_TABLE          = 16                               ,
-    parameter int unsigned               TABLE_BITS         = $clog2(NUM_TABLE)                ,
-    parameter veryl_Video::VesaDmtConfig CONFIG             = veryl_Video::Dmt1280x720At60Hz() ,
-    parameter int unsigned               NUM_PIXELS         = CONFIG.H_ACTIVE * CONFIG.V_ACTIVE,
-    parameter int unsigned               PIXEL_ADR_BITS     = $clog2(NUM_PIXELS)               ,
-    parameter int unsigned               VRAM_ADDRESS_WIDTH = $clog2((WIDTH * HEIGHT + 1) >> 1)
+    parameter int unsigned               WIDTH              = 128                                  ,
+    parameter int unsigned               HEIGHT             = 128                                  ,
+    parameter int unsigned               NUM_TABLE          = 16                                   ,
+    parameter int unsigned               TABLE_BITS         = $clog2(NUM_TABLE)                    ,
+    parameter veryl_Video::VesaDmtConfig CONFIG             = veryl_Video::Dmt1280x720At60Hz()     ,
+    parameter int unsigned               NUM_PIXELS         = CONFIG.H_ACTIVE * CONFIG.V_ACTIVE    ,
+    parameter int unsigned               PIXEL_ADR_BITS     = $clog2(NUM_PIXELS)                   ,
+    parameter int unsigned               VRAM_ADDRESS_WIDTH = $clog2((WIDTH * HEIGHT + 1) >> 1) + 1
 ) (
-    input wire i_clk,
-    input wire i_rst,
+    input logic i_clk,
+    input logic i_rst,
 
     veryl_Decoupled.receiver if_col_table_din,
 
     veryl_Decoupled.receiver if_vdata_in,
     // if_vdata_out: modport Decoupled::sender                      ,
-    input wire [VRAM_ADDRESS_WIDTH-1:0] i_vdata_adr,
+    input logic [VRAM_ADDRESS_WIDTH - 1-1:0] i_vdata_adr,
 
 
     // o_clr : output logic                        ,
@@ -68,10 +65,10 @@ module veryl_VideoControllerColTable #(
     // o_da  : output logic<TABLE_BITS>            ,
     // o_meb : output logic                        ,
     // o_adrb: output logic<$clog2(WIDTH * HEIGHT)>,
-    // i_qb  : input wire<TABLE_BITS>            ,
+    // i_qb  : input  logic<TABLE_BITS>            ,
 
-    input wire          i_clk_dvi,
-    input wire          i_rst_dvi,
+    input  logic          i_clk_dvi,
+    input  logic          i_rst_dvi,
     output logic [1-1:0]  o_vsync  ,
     output logic [1-1:0]  o_hsync  ,
     output logic [1-1:0]  o_de     ,
@@ -119,21 +116,21 @@ module veryl_VideoControllerColTable #(
         .WIDTH    (WIDTH ),
         .HEIGHT   (HEIGHT)
     ) vram_sync (
-        .i_clk  (i_clk                ),
-        .i_rst  (i_rst                ),
-        .i_clr  (0                    ),
-        .i_mea  (if_vdata_in.valid    ),
-        .i_wea  (if_vdata_in.valid    ),
-        .i_adra (i_vdata_adr          ),
-        .i_da   (if_vdata_in.bits[7:0]),
+        .i_clk  (i_clk                                ),
+        .i_rst  (i_rst                                ),
+        .i_clr  (0                                    ),
+        .i_mea  (if_vdata_in.valid                    ),
+        .i_wea  (if_vdata_in.valid                    ),
+        .i_adra (i_vdata_adr[VRAM_ADDRESS_WIDTH - 2:0]),
+        .i_da   (if_vdata_in.bits[7:0]                ),
         // i_meb      : 1                    ,
         // i_adrb     : i_vdata_adr          ,
         // o_qb       : w_vram_read_data     ,
-        .i_clk_video (i_clk_dvi  ),
-        .i_rst_video (i_rst_dvi  ),
-        .i_mev       (1          ),
-        .i_adrv      (w_draw_adr ),
-        .o_qv        (w_draw_data)
+        .i_clk_video (i_clk_dvi                           ),
+        .i_rst_video (i_rst_dvi                           ),
+        .i_mev       (1                                   ),
+        .i_adrv      (w_draw_adr[VRAM_ADDRESS_WIDTH - 2:0]),
+        .o_qv        (w_draw_data                         )
     );
 
     // if_vdata_out に信号が入力されてから valid が立つまで 1 クロック
@@ -173,24 +170,39 @@ module veryl_VideoControllerColTable #(
 
 
     // VRAM -> (this module) -> GOWIN DVI TX IP
-    logic [1-1:0]                      r_vsync        ;
-    logic [1-1:0]                      r_hsync        ;
-    logic [1-1:0]                      r_de           ;
-    logic [24-1:0]                     r_data         ;
-    logic [$clog2(CONFIG.H_TOTAL)-1:0] r_pixel_counter;
-    logic [$clog2(CONFIG.V_TOTAL)-1:0] r_line_counter ;
+    logic [1-1:0]  r_vsync;
+    logic [1-1:0]  r_hsync;
+    logic [1-1:0]  r_de   ;
+    logic [24-1:0] r_data ;
+
+    logic [$clog2(CONFIG.H_TOTAL)-1:0] w_pre_pre_pixel_counter; always_comb w_pre_pre_pixel_counter = ((32'(r_pixel_counter) + 1 == CONFIG.H_TOTAL - 1) ? (
+        0
+    ) : (32'(r_pixel_counter) == CONFIG.H_TOTAL - 1) ? (
+        1
+    ) : (
+        r_pixel_counter + 2
+    ));
+    logic [$clog2(CONFIG.H_TOTAL)-1:0] w_pre_pixel_counter    ; always_comb w_pre_pixel_counter     = ((32'(r_pixel_counter) == CONFIG.H_TOTAL - 1) ? ( 0 ) : ( r_pixel_counter + 1 ));
+    logic [$clog2(CONFIG.H_TOTAL)-1:0] r_pixel_counter        ;
+    logic [$clog2(CONFIG.V_TOTAL)-1:0] r_line_counter         ;
 
     logic [8-1:0] r_red  ;
     logic [8-1:0] r_green;
     logic [8-1:0] r_blue ;
-    always_comb o_data  = {r_blue, r_green, r_red};
+    always_comb o_data  = {r_red, r_green, r_blue};
 
     // let w_pixel_adr_flatten : `dvi logic<$clog2(CONFIG.H_ACTIVE * CONFIG.V_ACTIVE)> = YPos(r_line_counter) * CONFIG.H_ACTIVE + XPos(r_pixel_counter);
-    logic [PIXEL_ADR_BITS-1:0]     w_pixel_adr_flatten ; always_comb w_pixel_adr_flatten  = PIXEL_ADR_BITS'((YPos(r_line_counter) * 128 + XPos(r_pixel_counter)));
-    logic [VRAM_ADDRESS_WIDTH-1:0] w_draw_adr          ; always_comb w_draw_adr           = VRAM_ADDRESS_WIDTH'((w_pixel_adr_flatten >> 1));
-    logic [8-1:0]                  w_draw_data         ;
-    logic [TABLE_BITS-1:0]         w_draw_col_table_adr; always_comb w_draw_col_table_adr = TABLE_BITS'((w_draw_data >> (w_pixel_adr_flatten[0] << 1))); // pixel の番地が奇数のとき、上位 4bit を使う
-    logic [1-1:0]                  w_is_vram_region    ; always_comb w_is_vram_region     = IsVramRegion(XPos(r_pixel_counter), YPos(r_line_counter));
+    logic [VRAM_ADDRESS_WIDTH + 1-1:0] w_inv_zoom                 ; always_comb w_inv_zoom                  = InvZoom(XPos(w_pre_pixel_counter), YPos(r_line_counter));
+    logic [VRAM_ADDRESS_WIDTH + 1-1:0] w_inv_zoom_reading         ; always_comb w_inv_zoom_reading          = InvZoom(XPos(w_pre_pre_pixel_counter), YPos(r_line_counter));
+    logic [VRAM_ADDRESS_WIDTH-1:0]     w_pixel_adr_flatten_reading; always_comb w_pixel_adr_flatten_reading = w_inv_zoom_reading[VRAM_ADDRESS_WIDTH - 1:0];
+    logic [VRAM_ADDRESS_WIDTH-1:0]     w_pixel_adr_flatten        ; always_comb w_pixel_adr_flatten         = w_inv_zoom[VRAM_ADDRESS_WIDTH - 1:0];
+    logic [VRAM_ADDRESS_WIDTH-1:0]     w_draw_adr                 ; always_comb w_draw_adr                  = w_pixel_adr_flatten_reading >> 1;
+    logic [8-1:0]                      w_draw_data                ;
+    logic [TABLE_BITS-1:0]             w_draw_col_table_adr       ; always_comb w_draw_col_table_adr        = ((w_pixel_adr_flatten[0]) ? ( TABLE_BITS'((w_draw_data >> 4)) ) : ( TABLE_BITS'(w_draw_data) )); // pixel の番地が奇数のとき、上位 4bit を使う
+
+    // (x, y) = (3, 0) pixel を指していた場合
+    // vram上では vram[1] の上位 4bit が (3, 0) に対応
+    // xxxx ????
 
     localparam int unsigned H_LBORDER_START      = CONFIG.H_SYNC + CONFIG.H_BACK_PORCH;
     localparam int unsigned H_ACTIVE_VIDEO_START = H_LBORDER_START + CONFIG.H_LBORDER;
@@ -202,9 +214,15 @@ module veryl_VideoControllerColTable #(
     localparam int unsigned V_BOTTOM_BORDER_START = V_ACTIVE_VIDEO_START + CONFIG.V_ACTIVE;
     localparam int unsigned V_FRONT_PORCH_START   = V_BOTTOM_BORDER_START + CONFIG.V_BOTTOM_BORDER;
 
+    // const H_MAX_ZOOM: u32 = 1280 / WIDTH;
+    // const V_MAX_ZOOM: u32 = 720  / HEIGHT;
+    // const ZOOM_RATIO: u32 = if (H_MAX_ZOOM < V_MAX_ZOOM) { H_MAX_ZOOM } else { V_MAX_ZOOM };
+    // var r_hzoom_counter: `dvi logic<$clog2(ZOOM_RATIO+1)>;
+    // var r_vzoom_counter: `dvi logic<$clog2(ZOOM_RATIO+1)>;
+
     // WIDTH x HEIGHT のVRAM領域のオフセット(原点：左上)
-    localparam int unsigned OFFSET_X = 0;
-    localparam int unsigned OFFSET_Y = 0;
+    localparam int unsigned OFFSET_X = 384;
+    localparam int unsigned OFFSET_Y = 104;
 
     function automatic logic IsActiveRegion(
         input logic [$clog2(CONFIG.H_TOTAL)-1:0] i_pixel_counter,
@@ -216,29 +234,34 @@ module veryl_VideoControllerColTable #(
     function automatic int unsigned XPos(
         input logic [$clog2(CONFIG.H_TOTAL)-1:0] i_pixel_counter
     ) ;
-        return 32'(i_pixel_counter) - H_ACTIVE_VIDEO_START;
+        return 32'(i_pixel_counter) - H_ACTIVE_VIDEO_START - OFFSET_X;
     endfunction
 
     function automatic int unsigned YPos(
         input logic [$clog2(CONFIG.V_TOTAL)-1:0] i_line_counter
     ) ;
-        return 32'(i_line_counter) - V_ACTIVE_VIDEO_START;
+        return 32'(i_line_counter) - V_ACTIVE_VIDEO_START - OFFSET_Y;
     endfunction
 
-    function automatic logic IsVramRegion(
+    function automatic logic [VRAM_ADDRESS_WIDTH + 1-1:0] InvZoom(
         input logic [32-1:0] i_x,
         input logic [32-1:0] i_y
     ) ;
-        /* verilator lint_off UNSIGNED */
-        return (OFFSET_X <= i_x && i_x < WIDTH + OFFSET_X && OFFSET_Y <= i_y && i_y < HEIGHT + OFFSET_Y);
-        /* verilator lint_on UNSIGNED */
+        logic [32-1:0] w_x    ;
+        logic [32-1:0] w_y    ;
+        logic          w_valid;
+        w_x     = i_x >> 2;
+        w_y     = i_y >> 2;
+        w_valid = (w_x < WIDTH) && (w_y < HEIGHT);
+
+        return {w_valid, VRAM_ADDRESS_WIDTH'((w_y * WIDTH + w_x))};
     endfunction
 
     logic [8-1:0] w_draw_red  ;
     logic [8-1:0] w_draw_green;
     logic [8-1:0] w_draw_blue ;
 
-    always_comb {w_draw_blue, w_draw_green, w_draw_red} = r_col_table[w_draw_col_table_adr];
+    always_comb {w_draw_red, w_draw_green, w_draw_blue} = r_col_table[w_draw_col_table_adr];
 
     always_ff @ (posedge i_clk_dvi) begin
         if (i_rst_dvi) begin
@@ -262,26 +285,28 @@ module veryl_VideoControllerColTable #(
             // ほんとは as $bits(r_pixel_counter) を使いたいが、現状使えないので u32 に揃える
             if ((32'(r_pixel_counter) == CONFIG.H_TOTAL - 1)) begin
                 r_pixel_counter <= 0;
+            end else begin
+                r_pixel_counter <= r_pixel_counter + (1);
+            end
+            if ((32'(w_pre_pixel_counter) == CONFIG.H_TOTAL - 1)) begin
                 if ((32'(r_line_counter) == CONFIG.V_TOTAL - 1)) begin
                     r_line_counter <= 0;
                 end else begin
                     r_line_counter <= r_line_counter + (1);
                 end
-            end else begin
-                r_pixel_counter <= r_pixel_counter + (1);
             end
             o_hsync <= (32'(r_pixel_counter) < CONFIG.H_SYNC);
             o_vsync <= (32'(r_line_counter) < CONFIG.V_SYNC);
             o_de    <= IsActiveRegion(r_pixel_counter, r_line_counter);
 
-            if ((IsActiveRegion(r_pixel_counter, r_line_counter) && IsVramRegion(XPos(r_pixel_counter), YPos(r_line_counter)))) begin
+            if ((IsActiveRegion(r_pixel_counter, r_line_counter) && w_inv_zoom[($size(w_inv_zoom, 1) - 1)])) begin
                 r_red   <= w_draw_red;
                 r_green <= w_draw_green;
                 r_blue  <= w_draw_blue;
             end else begin
-                r_red   <= 8'hFF;
-                r_green <= 8'hFF;
-                r_blue  <= 8'hFF;
+                r_red   <= 8'h00;
+                r_green <= 8'h00;
+                r_blue  <= 8'h00;
             end
         end
     end

@@ -34,10 +34,10 @@
 
             @(posedge i_clk_dvi);
             @(posedge i_clk_dvi);
-            @(posedge i_clk_dvi);
+            @(posedge i_clk_dvi)
             i_rst_dvi <= 0;
 
-            repeat (32'h400000) @(posedge i_clk_dvi);
+            repeat (32'h40000) @(posedge i_clk_dvi);
             $finish;
             /* verilator lint_on INITIALDLY */
         end
@@ -55,7 +55,7 @@
 
             @(posedge i_clk);
             @(posedge i_clk);
-            @(posedge i_clk);
+            @(posedge i_clk)
             i_rst <= 0;
             /* verilator lint_on INITIALDLY */
             @(posedge i_clk);

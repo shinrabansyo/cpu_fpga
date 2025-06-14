@@ -10,9 +10,9 @@ module veryl_Core (
     input  logic [1-1:0] i_rx,
 
     // SPI
-    // o_sclk: output logic<1>,
-    // o_mosi: output logic<1>,
-    // i_miso: input  logic<1>,
+    output logic [1-1:0] o_sclk,
+    output logic [1-1:0] o_mosi,
+    input  logic [1-1:0] i_miso,
 
     // GPIO
     output logic [8-1:0] o_gpout,
@@ -42,25 +42,25 @@ module veryl_Core (
     // IOBus
     veryl_IOBus #(
         .ClockFrequency (12_000_000),
-        .UartBaudRate   (921600    )
+        .UartBaudRate   (115200    )
     ) io_bus (
-        .i_clk    (i_clk         ),
-        .i_rst    (i_rst         ),
-        .i_dev_id (i_dev_id      ),
-        .if_din   (if_io_bus_dout),
-        .if_dout  (if_io_bus_din ),
-        .o_tx     (o_tx          ),
-        .i_rx     (i_rx          ),
-        // o_sclk                  ,
-        // o_mosi                  ,
-        // i_miso                  ,
-        .o_gpout   (o_gpout  ),
-        .i_clk_dvi (i_clk_dvi),
-        .i_rst_dvi (i_rst_dvi),
-        .o_vsync   (o_vsync  ),
-        .o_hsync   (o_hsync  ),
-        .o_de      (o_de     ),
-        .o_data    (o_data   )
+        .i_clk     (i_clk         ),
+        .i_rst     (i_rst         ),
+        .i_dev_id  (i_dev_id      ),
+        .if_din    (if_io_bus_dout),
+        .if_dout   (if_io_bus_din ),
+        .o_tx      (o_tx          ),
+        .i_rx      (i_rx          ),
+        .o_sclk    (o_sclk        ),
+        .o_mosi    (o_mosi        ),
+        .i_miso    (i_miso        ),
+        .o_gpout   (o_gpout       ),
+        .i_clk_dvi (i_clk_dvi     ),
+        .i_rst_dvi (i_rst_dvi     ),
+        .o_vsync   (o_vsync       ),
+        .o_hsync   (o_hsync       ),
+        .o_de      (o_de          ),
+        .o_data    (o_data        )
     );
 
     // メモリ

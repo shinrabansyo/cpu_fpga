@@ -3,8 +3,14 @@ module Top(
     input logic i_rst,
 
     // UART
+    output logic [1-1:0] o_tx_pin,
     output logic [1-1:0] o_tx,
     input  logic [1-1:0] i_rx,
+
+    // SPI
+    output logic [1-1:0] o_sclk,
+    output logic [1-1:0] o_mosi,
+    input  logic [1-1:0] i_miso,
 
     // GPIO
     output logic [8-1:0] o_gpout,
@@ -15,6 +21,7 @@ module Top(
 	output wire			TMDS_DATA1,		// LVCMOS33D
 	output wire			TMDS_DATA2 		// LVCMOS33D
 );
+    assign o_tx_pin = o_tx;
     logic i_clk;
     logic i_clk_dvi;
     logic i_rst_dvi;
