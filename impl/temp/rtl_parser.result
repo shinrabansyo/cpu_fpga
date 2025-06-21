@@ -101,7 +101,7 @@
      },
      {
       "InstFile" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/Core.sv",
-      "InstLine" : 77,
+      "InstLine" : 79,
       "InstName" : "m_inst_mod",
       "ModuleFile" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/Mem.sv",
       "ModuleLine" : 41,
@@ -127,15 +127,15 @@
      },
      {
       "InstFile" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/Core.sv",
-      "InstLine" : 92,
+      "InstLine" : 94,
       "InstName" : "m_data_mod",
       "ModuleFile" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/Mem.sv",
-      "ModuleLine" : 211,
+      "ModuleLine" : 217,
       "ModuleName" : "veryl_DMemSync"
      },
      {
       "InstFile" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/Core.sv",
-      "InstLine" : 345,
+      "InstLine" : 376,
       "InstName" : "alu",
       "ModuleFile" : "C:/Users/wakuto/src/shinrabansho/cpu_fpga/src/target/Alu.sv",
       "ModuleLine" : 1,

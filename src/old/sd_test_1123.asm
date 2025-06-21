@@ -2,72 +2,42 @@
 
 // void main(void)
 @func_main
+    // 0. 起動確認
+    // addi r4 = r0, 0xAA
+    // out r0[4] = r4
+    addi r10 = r0, 1
+    addi r10 = r0, 1
+    beq r1, (r0, r0) -> @func_gpio_write
+
     // 1. SDカードの初期化
     addi r10 = r0, 0  // cs
-    addi r11 = r0, 4  // clk_shamt
+    addi r11 = r0, 5  // clk_shamt
     beq r1, (r0, r0) -> @func_sd_init
 
-    // 2. 1ブロック読み込み
-    add r10 = r0, r0     // block_addr
-    add r11 = r0, r0     // buffer
-    addi r4 = r0, 0x1002 // entry_point
-    add r12 = r0, r4
-    beq r1, (r0, r0) -> @func_single_block_load
-
-    // 3. エントリポイントにジャンプ
-    jal r1, r0[0x1002]
-
-    // 4. 無限ループ
-    @inf_loop.func_main
-    beq r0, (r0, r0) -> @inf_loop.func_main
-
-// void func_single_block_load(uint32_t block_addr, uint8_t *buffer, uint8_t *entry_point)
-@func_single_block_load
-// プロローグ
-    // フレームポインタの退避
-    subi r2 = r2, 4
-    sw r2[0] = r3
-    addi r3 = r2, 0
-
-    // リターンアドレスの退避
-    subi r2 = r2, 16
-    sw r3[-4] = r1
-
-    // entry_point を退避
-    add r20 = r0, r12
-
-    // 1. シングルブロックの読み取り
+    // 2. シングルブロックの読み取り
+    addi r10 = r0, 0  // block_addr (SDカード)
+    addi r11 = r0, 0  // buffer (CPU)
     beq r1, (r0, r0) -> @func_single_block_read
 
-    // 2. 実行結果確認
-    beq r0, (r10, r0) -> @uart.func_single_block_load
-    beq r0, (r0, r0) -> @epilogue.func_single_block_load
+    // 3. 実行結果確認
+    beq r0, (r10, 0) -> @uart.func_main
+    beq r0, (r0, r0) -> @inf_loop.func_main
 
-    // 3. 512byte entry_point に書き込み
-    @uart.func_single_block_load
-    add r4 = r0, r20
+    // 4. 512byte UART送信
+    @uart.func_main
     addi r5 = r0, 0
-    addi r7 = r0, 512
-    @read_loop.func_single_block_load
-    beq r0, (r5, r7) -> @epilogue.func_single_block_load
+    @read_loop.func_main
+    beq r0, (r5, 512) -> @inf_loop.func_main
         lb r6 = r5[0]
-        isb r4[0] = r6
+        out r0[0] = r6
         addi r5 = r5, 1
-        addi r4 = r4, 1
-        beq r0, (r0, r0) -> @read_loop.func_single_block_load
+        beq r0, (r0, r0) -> @read_loop.func_main
 
-    // エピローグ
-    @epilogue.func_single_block_load
-    // 保存レジスタの復元
-    lw r1 = r3[-4]
-    addi r2 = r2, 16
-
-    // フレームポインタの復元
-    lw r3 = r3[0]
-    addi r2 = r2, 4
-
-    // return
-    jal r0, r1[0]
+    // 5. 無限ループ
+    @inf_loop.func_main
+    addi r4 = r0, 97
+    out r0[0] = r4
+    beq r0, (r0, r0) -> @inf_loop.func_main
 
 // uint8_t func_sd_init(uint8_t cs, uint8_t clk_shamt)
 @func_sd_init
@@ -240,9 +210,6 @@
     addi r11 = r0, 0             // arg
     addi r12 = r0, 0             // crc は cmd8までなのでテキトーで大丈夫
     beq r1, (r0, r0) -> @func_spi_sd_command
-
-    // CMD58 の R3 レスポンス
-    beq r1, (r0, r0) -> @func_polling_r3_r7_response
     
     // R3 resp の 30bit 目が 1 であることを確認（SDHC/SDXC）
     addi r4 = r0, 0x40000000
@@ -521,7 +488,7 @@
     add r21 = r0, r11
     
     addi r10 = r0, 17  // cmd17
-    add r11 = r0, r20  // arg = block_addr
+    addi r11 = r0, r20 // arg = block_addr
     addi r12 = r0, 0   // crc テキトー
     
     beq r1, (r0, r0) -> @func_spi_sd_command
@@ -535,11 +502,7 @@
     // data token を待つ
     beq r1, (r0, r0) -> @func_polling_data_token_for_cmd17_18_24
 
-    // とりあえず1回交換する
-    addi r10 = r0, 0xFF
-    beq r1, (r0, r0) -> @func_spi_transfer
-
-    // バッファに書き込み (512回 = 512byte分)
+    // バッファに書き込み
     add r22 = r0, r0
     @store_loop.func_single_block_read
     addi r4 = r0, 512
@@ -557,16 +520,12 @@
     
     beq r0, (r0, r0) -> @store_loop.func_single_block_read
     @store_loop_end.func_single_block_read
-    
+
     // CRC 読み出し（無視）
     addi r10 = r0, 0xFF
     beq r1, (r0, r0) -> @func_spi_transfer
     addi r10 = r0, 0xFF
     beq r1, (r0, r0) -> @func_spi_transfer
-
-    // 正常終了コードの設定
-    addi r10 = r0, 0
-    beq r0, (r0, r0) -> @epilogue.func_single_block_read
     
     // エラーコードの設定
     @address_error.func_single_block_read

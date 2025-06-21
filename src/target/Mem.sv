@@ -91,9 +91,10 @@ module veryl_IMemSync #(
         end
     end
 
-    logic [DATA_WIDTH * 2-1:0] data_table;
-    logic [DATA_WIDTH * 2-1:0] q_buf     ;
-    always_comb o_qb       = q_buf[8 * adrb_mod_buf+:DATA_WIDTH];
+    logic [($bits(i_wea) << 1)-1:0] i_wea_table; always_comb i_wea_table = {i_wea, i_wea};
+    logic [DATA_WIDTH * 2-1:0]      data_table ;
+    logic [DATA_WIDTH * 2-1:0]      q_buf      ;
+    always_comb o_qb        = q_buf[8 * adrb_mod_buf+:DATA_WIDTH];
     for (genvar bank_id = 0; bank_id < BANK_NUM; bank_id++) begin :g_bank
         localparam int unsigned                                   BANK_ADDRESS_WIDTH                 = $clog2(WORD_SIZE);
         logic        [BANK_ADDRESS_WIDTH-1:0]          bank_adra                         ;
@@ -171,11 +172,16 @@ module veryl_IMemSync #(
         // 04: be ad de 00    {bank0, bank1, bank2, bank3} <= {da1, da2, da3, da0}
         // ---------------
         always_ff @ (posedge i_clk) begin
-            if (i_mea && i_wea[BANK_NUM - adra_mod + bank_id]) begin
+            if (i_mea && i_wea_table[BANK_NUM - adra_mod + bank_id]) begin
                 // ram_data[bank_adra] = i_da[((adra_mod + bank_id) % BANK_NUM)*8+:8]; と同じ
                 ram_data[bank_adra] <= data_table[(BANK_NUM - adra_mod + bank_id) * 8+:8];
             end
         end
+
+        // i_da: 0xdeadbeef
+        // data_table: 0xdeadbeef[deadbeef]
+        // data_table: 0xdeadbe[efdeadbe]ef
+        // data_table: 0xdead[beefdead]beef
 
         always_comb begin
             q_buf[bank_id * 8+:8]                   = q;

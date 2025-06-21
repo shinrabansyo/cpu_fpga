@@ -63,7 +63,7 @@ module veryl_Spi #(
         end else if (r_busy) begin
             if (r_sclk_counter == 0) begin
                 r_is_first_sclk <= 0;
-                r_sclk_counter  <= (1 >> (r_clkshamt + 0)) - 1;
+                r_sclk_counter  <= (1 >> r_clkshamt) - 1;
                 if (!(r_bit_counter == 1 && r_sclk == r_cpol && r_cpha)) begin
                     r_sclk <= ~r_sclk;
                 end
@@ -149,11 +149,6 @@ module veryl_Spi #(
             r_miso_buf    <= 0;
         end else if (r_busy && r_bit_counter == 0) begin
             r_busy <= 0;
-            // if r_half_clk_counter != 0 {
-            //     r_half_clk_counter -= 1;
-            // } else {
-            //     r_busy = 0;
-            // }
         end else if (!r_busy && if_din.valid) begin // 送信開始処理
             r_shift_reg   <= if_din.bits;
             r_busy        <= 1;

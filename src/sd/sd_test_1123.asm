@@ -2,27 +2,38 @@
 
 // void main(void)
 @func_main
+    // 0. 起動確認
+    // addi r4 = r0, 0xAA
+    // out r0[4] = r4
+    addi r10 = r0, 1
+    addi r10 = r0, 1
+    beq r1, (r0, r0) -> @func_gpio_write
+
     // 1. SDカードの初期化
     addi r10 = r0, 0  // cs
     addi r11 = r0, 4  // clk_shamt
     beq r1, (r0, r0) -> @func_sd_init
 
-    // 2. 1ブロック読み込み
-    add r10 = r0, r0     // block_addr
-    add r11 = r0, r0     // buffer
-    addi r4 = r0, 0x1002 // entry_point
-    add r12 = r0, r4
-    beq r1, (r0, r0) -> @func_single_block_load
+    // 2. 10 ブロック分読み取り
+    addi r4 = r0, 0
+    add r20 = r0, r4
+    addi r5 = r0, 10
+    add r21 = r0, r5
+    @print_loop.func_main
+    beq r0, (r20, r21) -> @inf_loop.func_main
+        add r10 = r0, r20
+        add r11 = r0, r0
+        beq r1, (r0, r0) -> @func_single_block_print
+        addi r4 = r0, 1
+        add r20 = r20, r4
+        beq r0, (r0, r0) -> @print_loop.func_main
 
-    // 3. エントリポイントにジャンプ
-    jal r1, r0[0x1002]
-
-    // 4. 無限ループ
+    // 3. 無限ループ
     @inf_loop.func_main
     beq r0, (r0, r0) -> @inf_loop.func_main
 
-// void func_single_block_load(uint32_t block_addr, uint8_t *buffer, uint8_t *entry_point)
-@func_single_block_load
+// void func_single_block_print(uint32_t block_addr, uint8_t *buffer)
+@func_single_block_print
 // プロローグ
     // フレームポインタの退避
     subi r2 = r2, 4
@@ -33,31 +44,26 @@
     subi r2 = r2, 16
     sw r3[-4] = r1
 
-    // entry_point を退避
-    add r20 = r0, r12
-
     // 1. シングルブロックの読み取り
     beq r1, (r0, r0) -> @func_single_block_read
 
     // 2. 実行結果確認
-    beq r0, (r10, r0) -> @uart.func_single_block_load
-    beq r0, (r0, r0) -> @epilogue.func_single_block_load
+    beq r0, (r10, r0) -> @uart.func_single_block_print
+    beq r0, (r0, r0) -> @epilogue.func_single_block_print
 
-    // 3. 512byte entry_point に書き込み
-    @uart.func_single_block_load
-    add r4 = r0, r20
+    // 3. 512byte UART送信
+    @uart.func_single_block_print
     addi r5 = r0, 0
     addi r7 = r0, 512
-    @read_loop.func_single_block_load
-    beq r0, (r5, r7) -> @epilogue.func_single_block_load
+    @read_loop.func_single_block_print
+    beq r0, (r5, r7) -> @epilogue.func_single_block_print
         lb r6 = r5[0]
-        isb r4[0] = r6
+        out r0[0] = r6
         addi r5 = r5, 1
-        addi r4 = r4, 1
-        beq r0, (r0, r0) -> @read_loop.func_single_block_load
+        beq r0, (r0, r0) -> @read_loop.func_single_block_print
 
     // エピローグ
-    @epilogue.func_single_block_load
+    @epilogue.func_single_block_print
     // 保存レジスタの復元
     lw r1 = r3[-4]
     addi r2 = r2, 16

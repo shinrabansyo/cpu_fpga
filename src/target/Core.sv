@@ -70,21 +70,23 @@ module veryl_Core (
     logic [32-1:0] r_pc_fetched ;
     logic [48-1:0] w_instr_raw  ;
 
+    logic [1-1:0]  w_is_dmem  ;
+    logic [1-1:0]  w_is_imem  ;
     logic [4-1:0]  w_wen      ;
     logic [1-1:0]  w_ren      ;
     logic [32-1:0] w_dmem_read;
 
     veryl_IMemSync m_inst_mod (
-        .i_clk  (i_clk        ),
-        .i_rst  (i_rst        ),
-        .i_clr  (1'h0         ),
-        .i_mea  (1'h0         ),
-        .i_wea  (6'h0         ),
-        .i_adra (32'h0        ),
-        .i_da   (48'h0        ),
-        .i_meb  (1'b1         ),
-        .i_adrb (w_pc_fetching),
-        .o_qb   (w_instr_raw  )
+        .i_clk  (i_clk                            ),
+        .i_rst  (i_rst                            ),
+        .i_clr  (1'h0                             ),
+        .i_mea  ((|w_wen) & w_is_imem             ),
+        .i_wea  ({2'b0, w_wen}                    ),
+        .i_adra (w_out                            ),
+        .i_da   ({16'b0, m_regfile[w_instr.rs2_s]}),
+        .i_meb  (1'b1                             ),
+        .i_adrb (w_pc_fetching                    ),
+        .o_qb   (w_instr_raw                      )
     );
 
     veryl_DMemSync #(
@@ -93,7 +95,7 @@ module veryl_Core (
         .i_clk  (i_clk                   ),
         .i_rst  (i_rst                   ),
         .i_clr  (1'h0                    ),
-        .i_mea  (|w_wen                  ),
+        .i_mea  ((|w_wen) & w_is_dmem    ),
         .i_wea  (w_wen                   ),
         .i_adra (w_out                   ),
         .i_da   (m_regfile[w_instr.rs2_s]),
@@ -193,6 +195,7 @@ module veryl_Core (
     localparam logic [8-1:0] SW   = (8'h0 << 5) | 8'h5;
     localparam logic [8-1:0] SH   = (8'h1 << 5) | 8'h5;
     localparam logic [8-1:0] SB   = (8'h2 << 5) | 8'h5;
+    localparam logic [8-1:0] ISB  = (8'h3 << 5) | 8'h5;
     localparam logic [8-1:0] IN   = (8'h0 << 5) | 8'h6;
     localparam logic [8-1:0] OUT  = (8'h1 << 5) | 8'h6;
     localparam logic [8-1:0] AND  = (8'h0 << 5) | 8'h7;
@@ -254,6 +257,32 @@ module veryl_Core (
         InstKind_Nop
     ));
 
+    always_comb w_is_dmem = ((({w_instr.opcode_sub, w_instr.opcode}) ==? (LW)) ? (
+        1'b1
+    ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (LH)) ? (
+        1'b1
+    ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (LB)) ? (
+        1'b1
+    ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (LHU)) ? (
+        1'b1
+    ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (LBU)) ? (
+        1'b1
+    ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (SW)) ? (
+        1'b1
+    ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (SH)) ? (
+        1'b1
+    ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (SB)) ? (
+        1'b1
+    ) : (
+        1'b0
+    ));
+
+    always_comb w_is_imem = ((({w_instr.opcode_sub, w_instr.opcode}) ==? (ISB)) ? (
+        1'b1
+    ) : (
+        1'b0
+    ));
+
     always_comb w_command = ((({w_instr.opcode_sub, w_instr.opcode}) ==? (ADD)) ? (
         8'h1
     ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (SUB)) ? (
@@ -287,6 +316,8 @@ module veryl_Core (
     ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (SH)) ? (
         8'h1
     ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (SB)) ? (
+        8'h1
+    ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (ISB)) ? (
         8'h1
     ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (IN)) ? (
         8'h1
@@ -353,10 +384,10 @@ module veryl_Core (
     always_comb begin
         // メモリに書き込むデータを選択
         case (1'b1)
-            ({w_instr.opcode_sub, w_instr.opcode}) ==? (SW): w_wen = 4'b1111;
-            ({w_instr.opcode_sub, w_instr.opcode}) ==? (SH): w_wen = 4'b0011;
-            ({w_instr.opcode_sub, w_instr.opcode}) ==? (SB): w_wen = 4'b0001;
-            default                                        : w_wen = 4'b0000;
+            ({w_instr.opcode_sub, w_instr.opcode}) ==? (SW                                                  ): w_wen = 4'b1111;
+            ({w_instr.opcode_sub, w_instr.opcode}) ==? (SH                                                  ): w_wen = 4'b0011;
+            ({w_instr.opcode_sub, w_instr.opcode}) ==? (SB), ({w_instr.opcode_sub, w_instr.opcode}) ==? (ISB): w_wen = 4'b0001;
+            default                                                                                          : w_wen = 4'b0000;
         endcase
 
         // ロード命令のとき，read_enable = 1
@@ -446,6 +477,8 @@ module veryl_Core (
             ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (SH)) ? (
                 m_regfile[w_instr.rd]
             ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (SB)) ? (
+                m_regfile[w_instr.rd]
+            ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (ISB)) ? (
                 m_regfile[w_instr.rd]
             ) : (({w_instr.opcode_sub, w_instr.opcode}) ==? (IN)) ? (
                 ((if_io_bus_din.valid) ? ( if_io_bus_din.bits ) : ( m_regfile[w_instr.rd] ))
