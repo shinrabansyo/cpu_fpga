@@ -1,9 +1,9 @@
--d C:\Users\wakuto\src\shinrabansho\cpu_fpga\impl\gwsynthesis\shinrabansho_fpga.vg
+-d C:\Users\wakuto\Documents\Gowin\cpu_fpga\impl\gwsynthesis\shinrabansho_fpga.vg
 -p GW1NR-9C-QFN88P-6
 -pn GW1NR-LV9QN88PC6/I5
--cst C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\shinrabansho_fpga.cst
--cfg C:\Users\wakuto\src\shinrabansho\cpu_fpga\impl\pnr\device.cfg
--sdc C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\shinrabansho_fpga.sdc
+-cst C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\shinrabansho_fpga.cst
+-cfg C:\Users\wakuto\Documents\Gowin\cpu_fpga\impl\pnr\device.cfg
+-sdc C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\shinrabansho_fpga.sdc
 -bit
 -tr
 -ph

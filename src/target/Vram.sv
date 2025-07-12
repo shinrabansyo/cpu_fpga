@@ -10,23 +10,24 @@ module veryl_VramSync #(
     parameter bit          BUFFER_OUT    = 1                                                                         , // 同期読み出し
     parameter DATA_TYPE    INITIAL_VALUE = DATA_TYPE'(0                                                             )
 ) (
-    input logic                          i_clk , // クロック
-    input logic                          i_rst , // リセット
-    input logic                          i_clr , // リセット2
-    input logic                          i_mea , // セレクト (w)
-    input logic     [DATA_WIDTH / 8-1:0] i_wea , // バイト単位の書き込み許可 (w)
-    input logic     [ADDRESS_WIDTH-1:0]  i_adra, // アドレス (w)
-    input DATA_TYPE                      i_da  , // データ (w)
+    input var logic                          i_clk , // クロック
+    input var logic                          i_rst , // リセット
+    input var logic                          i_clr , // リセット2
+    input var logic                          i_mea , // セレクト (w)
+    input var logic     [DATA_WIDTH / 8-1:0] i_wea , // バイト単位の書き込み許可 (w)
+    input var logic     [ADDRESS_WIDTH-1:0]  i_adra, // アドレス (w)
+    input var DATA_TYPE                      i_da  , // データ (w)
     // i_meb : input  logic                    , // セレクト (r)
     // i_adrb: input  logic    <ADDRESS_WIDTH> , // アドレス (r)
     // o_qb  : output DATA_TYPE                , // データ (r)
 
-    input  logic                             i_clk_video,
-    input  logic                             i_rst_video,
-    input  logic                             i_mev      ,
-    input  logic     [$clog2(WORD_SIZE)-1:0] i_adrv     ,
-    output DATA_TYPE                         o_qv   
+    input  var logic                             i_clk_video,
+    input  var logic                             i_rst_video,
+    input  var logic                             i_mev      ,
+    input  var logic     [$clog2(WORD_SIZE)-1:0] i_adrv     ,
+    output var DATA_TYPE                         o_qv   
 );
+
     logic [$bits(DATA_TYPE)-1:0] ram_data [0:WORD_SIZE-1];
     // var r_qb     : logic<$bits(DATA_TYPE)>            ;
     logic [$bits(DATA_TYPE)-1:0] r_qv;
@@ -37,7 +38,7 @@ module veryl_VramSync #(
 
     always_ff @ (posedge i_clk) begin
         if (i_rst) begin
-            // no reset
+            
         end else begin
             if (i_mea && i_wea) begin
                 ram_data[i_adra] <= i_da;

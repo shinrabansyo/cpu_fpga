@@ -18,9 +18,9 @@
 // https://github.com/veryl-lang/veryl/blob/6d3c23ce2d176a192ad67dcd99c97914cf5d46cb/crates/std/veryl/src/ram/ram.veryl
 
 module veryl_Div6 (
-    input  logic [32-1:0] x        ,
-    output logic [32-1:0] quotient ,
-    output logic [32-1:0] remainder
+    input  var logic [32-1:0] x        ,
+    output var logic [32-1:0] quotient ,
+    output var logic [32-1:0] remainder
 );
 
     // 6 の除算用マジックナンバー:
@@ -39,6 +39,7 @@ module veryl_Div6 (
 endmodule
 
 module veryl_IMemSync #(
+    parameter int unsigned RAM_INIT      = 0                     ,
     parameter int unsigned WORD_SIZE     = 1024                  , // 1024個の命令を保持
     parameter int unsigned ADDRESS_WIDTH = 32                    , // アドレスは常に32bit
     parameter int unsigned ADDRESS_MAX   = 6 * $clog2(WORD_SIZE) , // アドレスの最大値 = 命令サイズ*WORD_SIZE
@@ -47,16 +48,16 @@ module veryl_IMemSync #(
     parameter bit          BUFFER_OUT    = 1                     , // 同期読み出し
     parameter DATA_TYPE    INITIAL_VALUE = DATA_TYPE'(0         )
 ) (
-    input  logic                          i_clk , // クロック
-    input  logic                          i_rst , // リセット
-    input  logic                          i_clr , // リセット2
-    input  logic                          i_mea , // セレクト (w)
-    input  logic     [DATA_WIDTH / 8-1:0] i_wea , // バイト単位の書き込み許可 (w)
-    input  logic     [ADDRESS_WIDTH-1:0]  i_adra, // アドレス (w)
-    input  DATA_TYPE                      i_da  , // データ (w)
-    input  logic                          i_meb , // セレクト (r)
-    input  logic     [ADDRESS_WIDTH-1:0]  i_adrb, // アドレス (r)
-    output DATA_TYPE                      o_qb   // データ (r)
+    input  var logic                          i_clk , // クロック
+    input  var logic                          i_rst , // リセット
+    input  var logic                          i_clr , // リセット2
+    input  var logic                          i_mea , // セレクト (w)
+    input  var logic     [DATA_WIDTH / 8-1:0] i_wea , // バイト単位の書き込み許可 (w)
+    input  var logic     [ADDRESS_WIDTH-1:0]  i_adra, // アドレス (w)
+    input  var DATA_TYPE                      i_da  , // データ (w)
+    input  var logic                          i_meb , // セレクト (r)
+    input  var logic     [ADDRESS_WIDTH-1:0]  i_adrb, // アドレス (r)
+    output var DATA_TYPE o_qb   // データ (r)
 );
     localparam int unsigned BANK_NUM = DATA_WIDTH / 8;
 
@@ -142,18 +143,20 @@ module veryl_IMemSync #(
 
         initial begin
             // SystemVerilogでは $readmemh() の引数が文字列リテラルに限られており，変数は使用不可
-            if (bank_id == 0) begin
-                $readmemh("./test/tmp_inst_bank0.hex", ram_data);
-            end else if (bank_id == 1) begin
-                $readmemh("./test/tmp_inst_bank1.hex", ram_data);
-            end else if (bank_id == 2) begin
-                $readmemh("./test/tmp_inst_bank2.hex", ram_data);
-            end else if (bank_id == 3) begin
-                $readmemh("./test/tmp_inst_bank3.hex", ram_data);
-            end else if (bank_id == 4) begin
-                $readmemh("./test/tmp_inst_bank4.hex", ram_data);
-            end else if (bank_id == 5) begin
-                $readmemh("./test/tmp_inst_bank5.hex", ram_data);
+            if (RAM_INIT == 1) begin
+                if (bank_id == 0) begin
+                    $readmemh("./test/tmp_inst_bank0.hex", ram_data);
+                end else if (bank_id == 1) begin
+                    $readmemh("./test/tmp_inst_bank1.hex", ram_data);
+                end else if (bank_id == 2) begin
+                    $readmemh("./test/tmp_inst_bank2.hex", ram_data);
+                end else if (bank_id == 3) begin
+                    $readmemh("./test/tmp_inst_bank3.hex", ram_data);
+                end else if (bank_id == 4) begin
+                    $readmemh("./test/tmp_inst_bank4.hex", ram_data);
+                end else if (bank_id == 5) begin
+                    $readmemh("./test/tmp_inst_bank5.hex", ram_data);
+                end
             end
         end
 
@@ -223,16 +226,16 @@ module veryl_DMemSync #(
     parameter bit          BUFFER_OUT    = 1                     , // 同期読み出し
     parameter DATA_TYPE    INITIAL_VALUE = DATA_TYPE'(0         )
 ) (
-    input  logic                          i_clk , // クロック
-    input  logic                          i_rst , // リセット
-    input  logic                          i_clr , // リセット2
-    input  logic                          i_mea , // セレクト (w)
-    input  logic     [DATA_WIDTH / 8-1:0] i_wea , // バイト単位の書き込み許可 (w)
-    input  logic     [ADDRESS_WIDTH-1:0]  i_adra, // アドレス (w)
-    input  DATA_TYPE                      i_da  , // データ (w)
-    input  logic                          i_meb , // セレクト (r)
-    input  logic     [ADDRESS_WIDTH-1:0]  i_adrb, // アドレス (r)
-    output DATA_TYPE                      o_qb   // データ (r)
+    input  var logic                          i_clk , // クロック
+    input  var logic                          i_rst , // リセット
+    input  var logic                          i_clr , // リセット2
+    input  var logic                          i_mea , // セレクト (w)
+    input  var logic     [DATA_WIDTH / 8-1:0] i_wea , // バイト単位の書き込み許可 (w)
+    input  var logic     [ADDRESS_WIDTH-1:0]  i_adra, // アドレス (w)
+    input  var DATA_TYPE                      i_da  , // データ (w)
+    input  var logic                          i_meb , // セレクト (r)
+    input  var logic     [ADDRESS_WIDTH-1:0]  i_adrb, // アドレス (r)
+    output var DATA_TYPE o_qb   // データ (r)
 );
     localparam int unsigned BANK_NUM = DATA_WIDTH / 8;
 

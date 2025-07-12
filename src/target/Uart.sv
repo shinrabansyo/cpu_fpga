@@ -2,10 +2,10 @@ module veryl_UartTx #(
     parameter int unsigned ClockFrequency = 15_000_000, // default 15 MHz
     parameter int unsigned BaudRate       = 115200     // default 115200 bps
 ) (
-    input logic i_clk,
-    input logic i_rst,
+    input var logic i_clk,
+    input var logic i_rst,
 
-    output logic                    [1-1:0] o_tx  ,
+    output var logic                [1-1:0] o_tx  ,
     veryl_Decoupled.receiver         if_din
 );
     localparam int unsigned BAUD_DIVIDER = (ClockFrequency / BaudRate) - 1;
@@ -46,12 +46,12 @@ module veryl_UartRx #(
     parameter int unsigned BaudRate       = 115200    , // default 115200 bps
     parameter int unsigned RxSyncStages   = 2          // default 2 stages
 ) (
-    input logic i_clk,
-    input logic i_rst,
+    input var logic i_clk,
+    input var logic i_rst,
 
     veryl_Decoupled.sender         if_dout  , // 受信データをCPUに出力
-    input  logic                  [1-1:0] i_rx     , // UART信号入力
-    output logic                  [1-1:0] o_overrun // UARTデータ取りこぼし発生？
+    input  var logic              [1-1:0] i_rx     , // UART信号入力
+    output var logic              [1-1:0] o_overrun // UARTデータ取りこぼし発生？
 );
     localparam int unsigned BAUD_DIVIDER                = ClockFrequency / BaudRate;
     localparam int unsigned BAUD_DIVIDER_TIMES_3_OVER_2 = BAUD_DIVIDER * 3 / 2;

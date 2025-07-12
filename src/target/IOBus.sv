@@ -3,37 +3,37 @@ module veryl_IOBus #(
     parameter int unsigned UartBaudRate   = 115200     // default 115200bps
 ) (
     // クロック・リセット
-    input logic i_clk,
-    input logic i_rst,
+    input var logic i_clk,
+    input var logic i_rst,
 
     // デバイス制御
-    input logic                    [32-1:0] i_dev_id,
+    input var logic                [32-1:0] i_dev_id,
     veryl_Decoupled.receiver          if_din  ,
     veryl_Decoupled.sender            if_dout ,
 
     // UART
-    output logic [1-1:0] o_tx,
-    input  logic [1-1:0] i_rx,
+    output var logic [1-1:0] o_tx,
+    input  var logic [1-1:0] i_rx,
 
     // SPI
-    output logic [1-1:0] o_sclk,
-    output logic [1-1:0] o_mosi,
-    input  logic [1-1:0] i_miso,
+    output var logic [1-1:0] o_sclk,
+    output var logic [1-1:0] o_mosi,
+    input  var logic [1-1:0] i_miso,
 
     // GPIO
-    output logic [8-1:0] o_gpout,
+    output var logic [8-1:0] o_gpout,
 
     // HDMI
-    input  logic          i_clk_dvi,
-    input  logic          i_rst_dvi,
-    output logic [1-1:0]  o_vsync  ,
-    output logic [1-1:0]  o_hsync  ,
-    output logic [1-1:0]  o_de     ,
-    output logic [24-1:0] o_data   
+    input  var logic          i_clk_dvi,
+    input  var logic          i_rst_dvi,
+    output var logic [1-1:0]  o_vsync  ,
+    output var logic [1-1:0]  o_hsync  ,
+    output var logic [1-1:0]  o_de     ,
+    output var logic [24-1:0] o_data   
 );
     // UART
-    veryl_Decoupled #(.Width (8)) if_uart_tx        ();
-    veryl_Decoupled #(.Width (8)) if_uart_rx        ();
+    veryl_Decoupled #( .Width (8) ) if_uart_tx        ();
+    veryl_Decoupled #( .Width (8) ) if_uart_rx        ();
     logic [1-1:0] w_uart_rx_overrun;
 
     veryl_UartTx #(
@@ -59,13 +59,13 @@ module veryl_IOBus #(
     );
 
     // SPI
-    veryl_Decoupled #(.Width (8)) if_spi_din  ();
-    veryl_Decoupled #(.Width (8)) if_spi_dout ();
+    veryl_Decoupled #( .Width (8) ) if_spi_din  ();
+    veryl_Decoupled #( .Width (8) ) if_spi_dout ();
 
-    veryl_Decoupled #(.Width (3)) if_spi_clkshamt ();
+    veryl_Decoupled #( .Width (3) ) if_spi_clkshamt ();
     logic [3-1:0] w_spi_clkshamt ;
 
-    veryl_Decoupled #(.Width (2)) if_spi_mode ();
+    veryl_Decoupled #( .Width (2) ) if_spi_mode ();
     logic [2-1:0] w_spi_mode ;
 
     veryl_Spi #(
@@ -89,8 +89,8 @@ module veryl_IOBus #(
     );
 
     // GPIO
-    veryl_Decoupled #(.Width (8)) if_gpout_read  ();
-    veryl_Decoupled #(.Width (8)) if_gpout_write ();
+    veryl_Decoupled #( .Width (8) ) if_gpout_read  ();
+    veryl_Decoupled #( .Width (8) ) if_gpout_write ();
 
     veryl_GeneralPurposeOutput gpout (
         .i_clk   (i_clk         ),
@@ -119,8 +119,8 @@ module veryl_IOBus #(
     localparam int unsigned HDMI_LENGTH        = 32'h1000000;
     localparam int unsigned HDMI_VRAM_ADR_BITS = $clog2((128 * 128 + 1) >> 1);
     // inst if_col_mode_din   : Decoupled #(Width: 8,);
-    veryl_Decoupled #(.Width (32)) if_col_table_din ();
-    veryl_Decoupled #(.Width (8)) if_vdata_in      ();
+    veryl_Decoupled #( .Width (32) ) if_col_table_din ();
+    veryl_Decoupled #( .Width (8) ) if_vdata_in      ();
     // inst if_vdata_out      : Decoupled #(Width: 32,);
     logic [HDMI_VRAM_ADR_BITS-1:0] i_vdata_adr; always_comb i_vdata_adr = HDMI_VRAM_ADR_BITS'((i_dev_id - HDMI_BASE));
     veryl_VideoControllerColTable vc (

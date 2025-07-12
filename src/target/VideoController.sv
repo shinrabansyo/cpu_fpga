@@ -48,14 +48,14 @@ module veryl_VideoControllerColTable #(
     parameter int unsigned               PIXEL_ADR_BITS     = $clog2(NUM_PIXELS)                   ,
     parameter int unsigned               VRAM_ADDRESS_WIDTH = $clog2((WIDTH * HEIGHT + 1) >> 1) + 1
 ) (
-    input logic i_clk,
-    input logic i_rst,
+    input var logic i_clk,
+    input var logic i_rst,
 
     veryl_Decoupled.receiver if_col_table_din,
 
     veryl_Decoupled.receiver if_vdata_in,
     // if_vdata_out: modport Decoupled::sender                      ,
-    input logic [VRAM_ADDRESS_WIDTH - 1-1:0] i_vdata_adr,
+    input var logic [VRAM_ADDRESS_WIDTH - 1-1:0] i_vdata_adr,
 
 
     // o_clr : output logic                        ,
@@ -67,12 +67,12 @@ module veryl_VideoControllerColTable #(
     // o_adrb: output logic<$clog2(WIDTH * HEIGHT)>,
     // i_qb  : input  logic<TABLE_BITS>            ,
 
-    input  logic          i_clk_dvi,
-    input  logic          i_rst_dvi,
-    output logic [1-1:0]  o_vsync  ,
-    output logic [1-1:0]  o_hsync  ,
-    output logic [1-1:0]  o_de     ,
-    output logic [24-1:0] o_data   
+    input  var logic          i_clk_dvi,
+    input  var logic          i_rst_dvi,
+    output var logic [1-1:0]  o_vsync  ,
+    output var logic [1-1:0]  o_hsync  ,
+    output var logic [1-1:0]  o_de     ,
+    output var logic [24-1:0] o_data   
 
 );
     // CPU -> (this module)
@@ -182,9 +182,9 @@ module veryl_VideoControllerColTable #(
     ) : (
         r_pixel_counter + 2
     ));
-    logic [$clog2(CONFIG.H_TOTAL)-1:0] w_pre_pixel_counter    ; always_comb w_pre_pixel_counter     = ((32'(r_pixel_counter) == CONFIG.H_TOTAL - 1) ? ( 0 ) : ( r_pixel_counter + 1 ));
-    logic [$clog2(CONFIG.H_TOTAL)-1:0] r_pixel_counter        ;
-    logic [$clog2(CONFIG.V_TOTAL)-1:0] r_line_counter         ;
+    logic [$clog2(CONFIG.H_TOTAL)-1:0] w_pre_pixel_counter; always_comb w_pre_pixel_counter = ((32'(r_pixel_counter) == CONFIG.H_TOTAL - 1) ? ( 0 ) : ( r_pixel_counter + 1 ));
+    logic [$clog2(CONFIG.H_TOTAL)-1:0] r_pixel_counter    ;
+    logic [$clog2(CONFIG.V_TOTAL)-1:0] r_line_counter     ;
 
     logic [8-1:0] r_red  ;
     logic [8-1:0] r_green;
@@ -225,27 +225,27 @@ module veryl_VideoControllerColTable #(
     localparam int unsigned OFFSET_Y = 104;
 
     function automatic logic IsActiveRegion(
-        input logic [$clog2(CONFIG.H_TOTAL)-1:0] i_pixel_counter,
-        input logic [$clog2(CONFIG.V_TOTAL)-1:0] i_line_counter 
+        input var logic [$clog2(CONFIG.H_TOTAL)-1:0] i_pixel_counter,
+        input var logic [$clog2(CONFIG.V_TOTAL)-1:0] i_line_counter 
     ) ;
         return (H_ACTIVE_VIDEO_START <= 32'(i_pixel_counter) & 32'(i_pixel_counter) < H_RBORDER_START & V_ACTIVE_VIDEO_START <= 32'(i_line_counter) & 32'(i_line_counter) < V_BOTTOM_BORDER_START);
     endfunction
 
     function automatic int unsigned XPos(
-        input logic [$clog2(CONFIG.H_TOTAL)-1:0] i_pixel_counter
+        input var logic [$clog2(CONFIG.H_TOTAL)-1:0] i_pixel_counter
     ) ;
         return 32'(i_pixel_counter) - H_ACTIVE_VIDEO_START - OFFSET_X;
     endfunction
 
     function automatic int unsigned YPos(
-        input logic [$clog2(CONFIG.V_TOTAL)-1:0] i_line_counter
+        input var logic [$clog2(CONFIG.V_TOTAL)-1:0] i_line_counter
     ) ;
         return 32'(i_line_counter) - V_ACTIVE_VIDEO_START - OFFSET_Y;
     endfunction
 
     function automatic logic [VRAM_ADDRESS_WIDTH + 1-1:0] InvZoom(
-        input logic [32-1:0] i_x,
-        input logic [32-1:0] i_y
+        input var logic [32-1:0] i_x,
+        input var logic [32-1:0] i_y
     ) ;
         logic [32-1:0] w_x    ;
         logic [32-1:0] w_y    ;

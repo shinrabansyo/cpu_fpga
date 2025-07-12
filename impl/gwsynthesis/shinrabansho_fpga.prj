@@ -4,28 +4,28 @@
     <Version>beta</Version>
     <Device id="GW1NR-9C" package="QFN88P" speed="6" partNumber="GW1NR-LV9QN88PC6/I5"/>
     <FileList>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\Top.sv" type="verilog"/>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\ip\cpu_rpll\cpu_rpll.v" type="verilog"/>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\ip\dvi_clkdiv\dvi_clkdiv.v" type="verilog"/>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\ip\dvi_x5_rpll\dvi_x5_rpll.v" type="verilog"/>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\target\Alu.sv" type="verilog"/>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\target\ClkCounter.sv" type="verilog"/>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\target\Core.sv" type="verilog"/>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\target\Decoupled.sv" type="verilog"/>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\target\GeneralPurposeOutput.sv" type="verilog"/>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\target\IOBus.sv" type="verilog"/>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\target\Mem.sv" type="verilog"/>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\target\Spi.sv" type="verilog"/>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\target\Uart.sv" type="verilog"/>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\target\VideoController.sv" type="verilog"/>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\target\Vram.sv" type="verilog"/>
-        <File path="C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\ip\hdmi_tx_gw.vhd" type="vhdl"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\Top.sv" type="verilog"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\ip\cpu_rpll\cpu_rpll.v" type="verilog"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\ip\dvi_clkdiv\dvi_clkdiv.v" type="verilog"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\ip\dvi_x5_rpll\dvi_x5_rpll.v" type="verilog"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\target\Alu.sv" type="verilog"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\target\ClkCounter.sv" type="verilog"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\target\Core.sv" type="verilog"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\target\Decoupled.sv" type="verilog"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\target\GeneralPurposeOutput.sv" type="verilog"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\target\IOBus.sv" type="verilog"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\target\Mem.sv" type="verilog"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\target\Spi.sv" type="verilog"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\target\Uart.sv" type="verilog"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\target\VideoController.sv" type="verilog"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\target\Vram.sv" type="verilog"/>
+        <File path="C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\ip\hdmi_tx_gw.vhd" type="vhdl"/>
     </FileList>
     <OptionList>
         <Option type="disable_insert_pad" value="0"/>
         <Option type="global_freq" value="50.000"/>
         <Option type="looplimit" value="2000"/>
-        <Option type="output_file" value="C:\Users\wakuto\src\shinrabansho\cpu_fpga\impl\gwsynthesis\shinrabansho_fpga.vg"/>
+        <Option type="output_file" value="C:\Users\wakuto\Documents\Gowin\cpu_fpga\impl\gwsynthesis\shinrabansho_fpga.vg"/>
         <Option type="print_all_synthesis_warning" value="0"/>
         <Option type="ram_rw_check" value="0"/>
         <Option type="vcc" value="1.2"/>

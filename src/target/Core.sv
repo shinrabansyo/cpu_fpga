@@ -2,35 +2,40 @@
 // io宣言
 module veryl_Core (
     // クロック・リセット
-    input logic i_clk,
-    input logic i_rst,
+    input var logic i_clk,
+    input var logic i_rst,
 
     // UART
-    output logic [1-1:0] o_tx,
-    input  logic [1-1:0] i_rx,
+    output var logic [1-1:0] o_tx,
+    input  var logic [1-1:0] i_rx,
 
     // SPI
-    output logic [1-1:0] o_sclk,
-    output logic [1-1:0] o_mosi,
-    input  logic [1-1:0] i_miso,
+    output var logic [1-1:0] o_sclk,
+    output var logic [1-1:0] o_mosi,
+    input  var logic [1-1:0] i_miso,
 
     // GPIO
-    output logic [8-1:0] o_gpout,
+    output var logic [8-1:0] o_gpout,
 
     // HDMI
-    input  logic          i_clk_dvi,
-    input  logic          i_rst_dvi,
-    output logic [1-1:0]  o_vsync  ,
-    output logic [1-1:0]  o_hsync  ,
-    output logic [1-1:0]  o_de     ,
-    output logic [24-1:0] o_data   
+    input  var logic          i_clk_dvi,
+    input  var logic          i_rst_dvi,
+    output var logic [1-1:0]  o_vsync  ,
+    output var logic [1-1:0]  o_hsync  ,
+    output var logic [1-1:0]  o_de     ,
+    output var logic [24-1:0] o_data   
 );
+    localparam int unsigned IROM_BASE = 32'h8000_0004;
+    localparam int unsigned IRAM_BASE = 32'h0000_0000;
+
+    localparam int unsigned IRAM_SIZE = 4096; // 4KB
+
     // ワイヤ・インタフェース宣言
     // IOBus
     logic [32-1:0] i_dev_id;
 
-    veryl_Decoupled #(.Width (32)) if_io_bus_din  ();
-    veryl_Decoupled #(.Width (32)) if_io_bus_dout ();
+    veryl_Decoupled #( .Width (32) ) if_io_bus_din  ();
+    veryl_Decoupled #( .Width (32) ) if_io_bus_dout ();
 
     // ALU
     logic [8-1:0]  w_command;
@@ -70,24 +75,67 @@ module veryl_Core (
     logic [32-1:0] r_pc_fetched ;
     logic [48-1:0] w_instr_raw  ;
 
+    /* verilator lint_off UNSIGNED */
+    logic [1-1:0] w_is_pc_iram  ; always_comb w_is_pc_iram   = w_pc_fetching >= IRAM_BASE && w_pc_fetching < IRAM_BASE + IRAM_SIZE;
+    logic [1-1:0] w_is_wout_iram; always_comb w_is_wout_iram = w_out >= IRAM_BASE && w_out < IRAM_BASE + IRAM_SIZE;
+    logic [1-1:0] w_is_pc_irom  ; always_comb w_is_pc_irom   = w_pc_fetching >= IROM_BASE;
+    /* verilator lint_on UNSIGNED */
+    logic [1-1:0]  r_is_pc_iram    ;
+    logic [1-1:0]  r_is_pc_irom    ;
+    logic [48-1:0] w_iram_instr_raw;
+    logic [48-1:0] w_irom_instr_raw;
+
     logic [1-1:0]  w_is_dmem  ;
     logic [1-1:0]  w_is_imem  ;
     logic [4-1:0]  w_wen      ;
     logic [1-1:0]  w_ren      ;
     logic [32-1:0] w_dmem_read;
 
-    veryl_IMemSync m_inst_mod (
-        .i_clk  (i_clk                            ),
-        .i_rst  (i_rst                            ),
-        .i_clr  (1'h0                             ),
-        .i_mea  ((|w_wen) & w_is_imem             ),
-        .i_wea  ({2'b0, w_wen}                    ),
-        .i_adra (w_out                            ),
-        .i_da   ({16'b0, m_regfile[w_instr.rs2_s]}),
-        .i_meb  (1'b1                             ),
-        .i_adrb (w_pc_fetching                    ),
-        .o_qb   (w_instr_raw                      )
+    // +---------+ 0x0000_0000
+    // |   RAM   |
+    // +---------+ 0x0000_0000 + 4kB
+    // |  blank  |
+    // +---------+ 0x8000_0004
+    // |  IROM   |
+    // +---------+ 0x8000_0004 + 4kB
+
+    veryl_IMemSync #(
+        .RAM_INIT (0)
+    ) m_iram_mod (
+        .i_clk  (i_clk                                ),
+        .i_rst  (i_rst                                ),
+        .i_clr  (1'h0                                 ),
+        .i_mea  ((|w_wen) & w_is_imem & w_is_wout_iram),
+        .i_wea  ({2'b0, w_wen}                        ),
+        .i_adra (w_out                                ),
+        .i_da   ({16'b0, m_regfile[w_instr.rs2_s]}    ),
+        .i_meb  (w_is_pc_iram                         ),
+        .i_adrb (w_pc_fetching                        ),
+        .o_qb   (w_iram_instr_raw                     )
     );
+
+    veryl_IMemSync #(
+        .RAM_INIT (1)
+    ) m_irom_mod (
+        .i_clk  (i_clk                    ),
+        .i_rst  (i_rst                    ),
+        .i_clr  (1'h0                     ),
+        .i_mea  (0                        ),
+        .i_wea  (0                        ),
+        .i_adra (0                        ),
+        .i_da   (0                        ),
+        .i_meb  (w_is_pc_irom             ),
+        .i_adrb (w_pc_fetching - IROM_BASE),
+        .o_qb   (w_irom_instr_raw         )
+    );
+
+    always_comb w_instr_raw = ((({r_is_pc_iram, r_is_pc_irom}) ==? (2'b10)) ? (
+        w_iram_instr_raw
+    ) : (({r_is_pc_iram, r_is_pc_irom}) ==? (2'b01)) ? (
+        w_irom_instr_raw
+    ) : (
+        48'h0
+    ));
 
     veryl_DMemSync #(
         .WORD_SIZE (4096)
@@ -141,9 +189,13 @@ module veryl_Core (
 
     always_ff @ (posedge i_clk) begin
         if (i_rst) begin
-            r_pc_fetched <= 32'h0;
+            r_pc_fetched <= IROM_BASE;
+            r_is_pc_iram <= 1'b0;
+            r_is_pc_irom <= 1'b1;
         end else begin
             r_pc_fetched <= w_pc_fetching;
+            r_is_pc_iram <= w_is_pc_iram;
+            r_is_pc_irom <= w_is_pc_irom;
         end
     end
 
@@ -212,11 +264,11 @@ module veryl_Core (
     localparam logic [8-1:0] SLLI = (8'h5 << 5) | 8'h8;
 
     typedef enum logic [3-1:0] {
-        InstKind_R = 3'h0,
-        InstKind_I = 3'h1,
-        InstKind_B = 3'h2,
-        InstKind_S = 3'h3,
-        InstKind_Nop = 3'h7
+        InstKind_R = $bits(logic [3-1:0])'(3'h0),
+        InstKind_I = $bits(logic [3-1:0])'(3'h1),
+        InstKind_B = $bits(logic [3-1:0])'(3'h2),
+        InstKind_S = $bits(logic [3-1:0])'(3'h3),
+        InstKind_Nop = $bits(logic [3-1:0])'(3'h7)
     } InstKind;
 
     InstKind inst_kind; always_comb inst_kind = (((w_instr.opcode) ==? (1)) ? (
@@ -405,14 +457,14 @@ module veryl_Core (
             // 初期状態: r_load_ready = 0
             case (1'b1)
                 ({w_instr.opcode_sub, w_instr.opcode}) ==? (LW), ({w_instr.opcode_sub, w_instr.opcode}) ==? (LH), ({w_instr.opcode_sub, w_instr.opcode}) ==? (LB), ({w_instr.opcode_sub, w_instr.opcode}) ==? (LHU), ({w_instr.opcode_sub, w_instr.opcode}) ==? (LBU): begin
-                                                                                                                                                                                                                                                                           // 1. ロード命令 && r_load_ready = 0
-                                                                                                                                                                                                                                                                           if (!r_load_ready) begin
-                                                                                                                                                                                                                                                                               r_load_ready <= 1;
-                                                                                                                                                                                                                                                                               // 2. ロード命令 && r_load_ready = 1 -> 読み出し完了，初期状態に戻す
-                                                                                                                                                                                                                                                                           end else begin
-                                                                                                                                                                                                                                                                               r_load_ready <= 0;
-                                                                                                                                                                                                                                                                           end
-                                                                                                                                                                                                                                                                       end
+                    // 1. ロード命令 && r_load_ready = 0
+                    if (!r_load_ready) begin
+                        r_load_ready <= 1;
+                        // 2. ロード命令 && r_load_ready = 1 -> 読み出し完了，初期状態に戻す
+                    end else begin
+                        r_load_ready <= 0;
+                    end
+                end
                 default: r_load_ready <= 0;
             endcase
         end

@@ -5,34 +5,34 @@
 1. PnR Messages
 
   <Report Title>: PnR Report
-  <Design File>: C:\Users\wakuto\src\shinrabansho\cpu_fpga\impl\gwsynthesis\shinrabansho_fpga.vg
-  <Physical Constraints File>: C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\shinrabansho_fpga.cst
-  <Timing Constraints File>: C:\Users\wakuto\src\shinrabansho\cpu_fpga\src\shinrabansho_fpga.sdc
+  <Design File>: C:\Users\wakuto\Documents\Gowin\cpu_fpga\impl\gwsynthesis\shinrabansho_fpga.vg
+  <Physical Constraints File>: C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\shinrabansho_fpga.cst
+  <Timing Constraints File>: C:\Users\wakuto\Documents\Gowin\cpu_fpga\src\shinrabansho_fpga.sdc
   <Tool Version>: V1.9.10.03 Education (64-bit)
   <Part Number>: GW1NR-LV9QN88PC6/I5
   <Device>: GW1NR-9
   <Device Version>: C
-  <Created Time>:Sat Jun 21 20:50:10 2025
+  <Created Time>:Sat Jul 12 23:07:14 2025
 
 
 2. PnR Details
 
   Running placement:
-    Placement Phase 0: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
-    Placement Phase 1: CPU time = 0h 0m 0.121s, Elapsed time = 0h 0m 0.121s
-    Placement Phase 2: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
+    Placement Phase 0: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
+    Placement Phase 1: CPU time = 0h 0m 0.163s, Elapsed time = 0h 0m 0.163s
+    Placement Phase 2: CPU time = 0h 0m 3s, Elapsed time = 0h 0m 3s
     Placement Phase 3: CPU time = 0h 0m 13s, Elapsed time = 0h 0m 13s
-    Total Placement: CPU time = 0h 0m 17s, Elapsed time = 0h 0m 17s
+    Total Placement: CPU time = 0h 0m 19s, Elapsed time = 0h 0m 19s
  Running routing:
-    Routing Phase 0: CPU time = 0h 0m 0.003s, Elapsed time = 0h 0m 0.003s
+    Routing Phase 0: CPU time = 0h 0m 0.004s, Elapsed time = 0h 0m 0.004s
     Routing Phase 1: CPU time = 0h 0m 2s, Elapsed time = 0h 0m 2s
-    Routing Phase 2: CPU time = 0h 0m 14s, Elapsed time = 0h 0m 14s
+    Routing Phase 2: CPU time = 0h 1m 5s, Elapsed time = 0h 1m 5s
     Routing Phase 3: CPU time = 0h 0m 0s, Elapsed time = 0h 0m 0s
-    Total Routing: CPU time = 0h 0m 16s, Elapsed time = 0h 0m 16s
+    Total Routing: CPU time = 0h 1m 7s, Elapsed time = 0h 1m 7s
  Generate output files:
     CPU time = 0h 0m 1s, Elapsed time = 0h 0m 1s
 
- Total Time and Memory Usage: CPU time = 0h 0m 34s, Elapsed time = 0h 0m 34s, Peak memory usage = 362MB
+ Total Time and Memory Usage: CPU time = 0h 1m 28s, Elapsed time = 0h 1m 28s, Peak memory usage = 437MB
 
 
 3. Resource Usage Summary
@@ -40,15 +40,15 @@
   --------------------------------------------------------------------------------
   Resources                   | Usage                               | Utilization
   --------------------------------------------------------------------------------
-  Logic                       | 4767/8640                           |  56%
-    --LUT,ALU,ROM16           | 4287(3773 LUT, 514 ALU, 0 ROM16)    | -
+  Logic                       | 5289/8640                           |  62%
+    --LUT,ALU,ROM16           | 4809(4231 LUT, 578 ALU, 0 ROM16)    | -
     --SSRAM(RAM16)            | 80                                  | -
-  Register                    | 1447/6693                           |  22%
+  Register                    | 1501/6693                           |  23%
     --Logic Register as Latch | 0/6480                              |  0%
-    --Logic Register as FF    | 1445/6480                           |  23%
+    --Logic Register as FF    | 1499/6480                           |  24%
     --I/O Register as Latch   | 0/213                               |  0%
     --I/O Register as FF      | 2/213                               |  <1%
-  CLS                         | 2997/4320                           |  70%
+  CLS                         | 3282/4320                           |  76%
   I/O Port                    | 20/71                               |  29%
   I/O Buf                     | 20                                  | -
     --Input Buf               | 4                                   | -
@@ -56,12 +56,13 @@
     --Inout Buf               | 0                                   | -
   IOLOGIC                     | 8/97                                | 9%
     --OSER10                  | 4
-  BSRAM                       | 20/26                               | 77%
+  BSRAM                       | 26/26                               | 100%
     --SP                      | 8
     --SDPB                    | 11
     --SDPX9B                  | 1
-  DSP                         | 4/10                                | 40%
-    --MULT36X36               | 2
+    --pROM                    | 6
+  DSP                         | 6/10                                | 60%
+    --MULT36X36               | 3
   ================================================================================
 
 
@@ -83,7 +84,7 @@
   Clock Resource| Usage         | Utilization 
   ------------------------------------------
   PRIMARY       | 3/8           | 38%
-  LW            | 2/8           | 25%
+  LW            | 3/8           | 38%
   GCLK_PIN      | 2/3           | 67%
   CLKDIV        | 1/8           | 13%
   rPLL          | 2/2           | 100%
@@ -99,6 +100,7 @@
   i_clk          | PRIMARY        |  TR TL BR BL
   i_clk_dvi      | PRIMARY        |  TR BR BL
   i_rst_dvi_6    | LW             |  -
+  core/g_bank[0].q_0_13| LW             |  -
   core/g_bank[0].q_0_4| LW             |  -
   w_clk_dvi_x5   | HCLK           | TOP[0]
   ===========================================

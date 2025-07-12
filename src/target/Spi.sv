@@ -1,21 +1,21 @@
 module veryl_Spi #(
     parameter int unsigned ClockFrequency = 15_000_000
 ) (
-    input logic i_clk,
-    input logic i_rst,
+    input var logic i_clk,
+    input var logic i_rst,
 
-    output logic o_mosi,
-    input  logic i_miso,
-    output logic o_sclk,
+    output var logic o_mosi,
+    input  var logic i_miso,
+    output var logic o_sclk,
 
     veryl_Decoupled.receiver if_din , // 任意のデータを送るとき
     veryl_Decoupled.sender   if_dout, // データを読み取るとき
 
     veryl_Decoupled.receiver         if_clkshamt, // シフト量(shift amout) + 1
-    output logic                    [3-1:0] o_clkshamt ,
+    output var logic                [3-1:0] o_clkshamt ,
 
     veryl_Decoupled.receiver         if_spi_mode, // SPIモード
-    output logic                    [2-1:0] o_spi_mode 
+    output var logic                [2-1:0] o_spi_mode 
     // SCLK クロックの速度 = ClockFrequency >> (clkshamt + 1)
 );
     // クロックの分周用信号

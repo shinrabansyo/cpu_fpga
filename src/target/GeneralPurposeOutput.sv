@@ -1,10 +1,10 @@
 module veryl_GeneralPurposeOutput (
-    input logic i_clk,
-    input logic i_rst,
+    input var logic i_clk,
+    input var logic i_rst,
 
     veryl_Decoupled.receiver         if_din ,
     veryl_Decoupled.sender           if_dout,
-    output logic                    [8-1:0] o_gpout
+    output var logic                [8-1:0] o_gpout
 );
     logic [8-1:0] r_pin_out;
 

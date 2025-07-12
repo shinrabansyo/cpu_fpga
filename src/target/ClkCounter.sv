@@ -1,15 +1,15 @@
 module veryl_ClkCounter #(
     parameter int unsigned ClockFrequency = 15_000_000 // default 15 MHz
 ) (
-    input logic i_clk,
-    input logic i_rst,
+    input var logic i_clk,
+    input var logic i_rst,
 
     // クロック関連
-    output logic [64-1:0] o_clk_count,
-    output logic [32-1:0] o_clk_freq ,
+    output var logic [64-1:0] o_clk_count,
+    output var logic [32-1:0] o_clk_freq ,
 
     // タイマー関連
-    output logic [64-1:0] o_ms_count
+    output var logic [64-1:0] o_ms_count
 );
     logic [64-1:0] r_counter;
 

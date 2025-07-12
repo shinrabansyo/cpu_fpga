@@ -1,9 +1,9 @@
 module veryl_Alu (
-    input  logic [8-1:0]  i_command,
-    input  logic [32-1:0] i_a      ,
-    input  logic [32-1:0] i_b      ,
-    output logic [1-1:0]  o_zero   ,
-    output logic [32-1:0] o_out
+    input  var logic [8-1:0]  i_command,
+    input  var logic [32-1:0] i_a      ,
+    input  var logic [32-1:0] i_b      ,
+    output var logic [1-1:0]  o_zero   ,
+    output var logic [32-1:0] o_out
 );
     // 算術右シフト
     logic signed [32-1:0] i_a_signed; always_comb i_a_signed = i_a;
